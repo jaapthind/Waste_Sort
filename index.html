@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ULTRA-MATRIX NEURAL ENGINE v7.0</title>
+    <title>Biometric Topography Engine</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
@@ -18,54 +18,56 @@
 
     <style>
         :root {
-            --bg-void: #00050b;
-            --hud-color: #69BE28; /* Action Green */
-            --trim-color: #002244; /* College Navy */
-            --danger: #ff0055;
-            --panel-bg: rgba(0, 10, 20, 0.7);
+            --bg-void: #000205;
+            --data-cyan: #00f0ff;
+            --data-blue: #0055ff;
+            --alert-red: #ff003c;
+            --panel-bg: rgba(0, 5, 15, 0.8);
         }
 
         body {
             margin: 0; overflow: hidden; background-color: var(--bg-void);
-            color: var(--hud-color); font-family: 'Consolas', 'Courier New', monospace;
-            user-select: none;
+            color: var(--data-cyan); font-family: 'Courier New', monospace; user-select: none;
         }
 
         #webgl-canvas { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
 
         /* PIP Camera Feed */
         #video-feed {
-            position: absolute; bottom: 30px; left: 30px; width: 320px;
-            border: 2px solid var(--hud-color); border-radius: 4px;
-            z-index: 10; filter: grayscale(100%) contrast(150%);
-            transform: scaleX(-1); box-shadow: 0 0 30px rgba(105, 190, 40, 0.3);
+            position: absolute; bottom: 30px; left: 30px; width: 280px;
+            border: 1px solid var(--data-cyan); z-index: 10;
+            filter: grayscale(100%) contrast(150%) brightness(0.8);
+            transform: scaleX(-1); opacity: 0.7; mix-blend-mode: screen;
         }
 
-        /* Cyber UI Overlay */
+        /* Cyber UI Overlays */
         .hud-panel {
             position: absolute; background: var(--panel-bg);
-            border: 1px solid var(--hud-color); backdrop-filter: blur(8px);
-            z-index: 10; padding: 20px; box-shadow: inset 0 0 20px rgba(0, 34, 68, 0.8);
+            border: 1px solid var(--data-blue); z-index: 10; padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 85, 255, 0.2); backdrop-filter: blur(5px);
         }
 
-        #telemetry { top: 30px; right: 30px; width: 350px; border-top: 4px solid var(--hud-color); }
+        #telemetry-hud { top: 30px; right: 30px; width: 320px; border-left: 3px solid var(--data-cyan); }
+        #audio-hud { bottom: 30px; right: 30px; width: 320px; border-right: 3px solid var(--data-cyan); }
         
-        h1 { margin: 0 0 15px 0; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--hud-color); }
+        h1 { margin: 0 0 15px 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 3px; border-bottom: 1px solid var(--data-blue); padding-bottom: 8px;}
         
-        .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #004488; font-size: 0.9rem; }
-        .data-label { color: #88bbff; }
-        .data-val { font-weight: bold; text-shadow: 0 0 8px var(--hud-color); }
+        .data-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.85rem; }
+        .data-label { color: #5588ff; }
+        .data-val { font-weight: bold; text-shadow: 0 0 5px var(--data-cyan); }
         
-        .alert { color: var(--danger); text-shadow: 0 0 10px var(--danger); animation: flash 0.5s infinite; }
-        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        /* Audio Visualizer */
+        .meter-container { width: 100%; height: 8px; background: #001133; margin-top: 10px; }
+        #audio-bar { width: 0%; height: 100%; background: var(--data-cyan); transition: width 0.05s ease-out; box-shadow: 0 0 10px var(--data-cyan); }
 
-        /* Scanline Overlay */
-        .scanlines {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%;
-            z-index: 5; pointer-events: none;
+        /* Crosshairs */
+        .crosshair {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 40px; height: 40px; pointer-events: none; z-index: 5; opacity: 0.5;
         }
+        .crosshair::before, .crosshair::after { content: ''; position: absolute; background: var(--data-cyan); }
+        .crosshair::before { top: 50%; left: -10px; width: 60px; height: 1px; }
+        .crosshair::after { top: -10px; left: 50%; width: 1px; height: 60px; }
 
         #loading {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -73,41 +75,46 @@
             flex-direction: column; align-items: center; justify-content: center;
         }
         .spinner {
-            width: 80px; height: 80px; border: 4px solid transparent;
-            border-top-color: var(--hud-color); border-bottom-color: var(--trim-color);
+            width: 60px; height: 60px; border: 2px solid transparent;
+            border-top-color: var(--data-cyan); border-bottom-color: var(--data-blue);
             border-radius: 50%; animation: spin 1s linear infinite;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-
     </style>
 </head>
 <body>
 
     <div id="loading">
         <div class="spinner"></div>
-        <h2 style="margin-top: 30px; letter-spacing: 5px; text-shadow: 0 0 15px var(--hud-color);">COMPILING ML SHADERS</h2>
-        <p style="color: #88bbff;">Awaiting Localhost Camera Handshake...</p>
+        <h2 style="margin-top: 20px; letter-spacing: 4px;">INITIALIZING TOPOGRAPHY MATRIX</h2>
+        <p style="color: #5588ff; font-size: 0.8rem;">Awaiting WebRTC Media Streams...</p>
     </div>
 
     <canvas id="webgl-canvas"></canvas>
-    <div class="scanlines"></div>
+    <div class="crosshair"></div>
     <video id="video-feed" autoplay playsinline></video>
 
-    <div class="hud-panel" id="telemetry">
-        <h1>BIOMETRIC UPLINK</h1>
-        <div class="data-row"><span class="data-label">SYS_STATE:</span><span class="data-val" id="sys-state" style="color: #ffaa00;">AWAITING FEED</span></div>
-        <div class="data-row"><span class="data-label">NODES_TRACKED:</span><span class="data-val" id="nodes-tracked">0 / 478</span></div>
-        <div class="data-row"><span class="data-label">PITCH_AXIS (X):</span><span class="data-val" id="val-pitch">0.00°</span></div>
-        <div class="data-row"><span class="data-label">YAW_AXIS (Y):</span><span class="data-val" id="val-yaw">0.00°</span></div>
-        <div class="data-row"><span class="data-label">ROLL_AXIS (Z):</span><span class="data-val" id="val-roll">0.00°</span></div>
-        <div class="data-row"><span class="data-label">MOUTH_APERTURE:</span><span class="data-val" id="val-mouth">0.00 mm</span></div>
-        <div class="data-row"><span class="data-label">OCULAR_STATUS:</span><span class="data-val" id="val-eyes">OPEN</span></div>
-        <div style="margin-top: 15px; text-align: center; font-weight: bold; display: none;" id="tongue-alert" class="alert">ACTION: TONGUE DEPLOYED</div>
+    <div class="hud-panel" id="telemetry-hud">
+        <h1>SPATIAL DATA STREAM</h1>
+        <div class="data-row"><span class="data-label">AI_UPLINK:</span><span class="data-val" id="sys-state" style="color: #ffaa00;">AWAITING</span></div>
+        <div class="data-row"><span class="data-label">VERTICES_MAPPED:</span><span class="data-val" id="nodes-tracked">0 / 478</span></div>
+        <div class="data-row"><span class="data-label">X_PITCH:</span><span class="data-val" id="val-pitch">0.00°</span></div>
+        <div class="data-row"><span class="data-label">Y_YAW:</span><span class="data-val" id="val-yaw">0.00°</span></div>
+        <div class="data-row"><span class="data-label">Z_ROLL:</span><span class="data-val" id="val-roll">0.00°</span></div>
+        <div class="data-row"><span class="data-label">Z_DEPTH_DELTA:</span><span class="data-val" id="val-depth">0.00 units</span></div>
+        <div class="data-row"><span class="data-label">OCULAR_STATE:</span><span class="data-val" id="val-eyes">ANALYZING</span></div>
+    </div>
+
+    <div class="hud-panel" id="audio-hud">
+        <h1>ENVIRONMENTAL AUDIO</h1>
+        <div class="data-row"><span class="data-label">MIC_INPUT:</span><span class="data-val" id="aud-level">0.0 dB</span></div>
+        <div class="data-row"><span class="data-label">MESH_RESONANCE:</span><span class="data-val">ACTIVE</span></div>
+        <div class="meter-container"><div id="audio-bar"></div></div>
     </div>
 
     <script>
         // ==========================================
-        // 1. ADVANCED THREE.JS + BLOOM COMPOSER
+        // 1. ADVANCED WEBGL & BLOOM COMPOSER
         // ==========================================
         const canvas = document.getElementById('webgl-canvas');
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -115,226 +122,179 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x00050b, 0.0007);
+        scene.fog = new THREE.FogExp2(0x000205, 0.0006);
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
-        camera.position.set(0, 50, 900);
+        camera.position.set(0, 0, 800);
 
-        // Lights
-        scene.add(new THREE.AmbientLight(0xffffff, 0.3));
-        const dirLight = new THREE.DirectionalLight(0x69BE28, 2.0);
-        dirLight.position.set(200, 500, 300);
-        scene.add(dirLight);
-        const backLight = new THREE.DirectionalLight(0x002244, 3.0);
-        backLight.position.set(-200, -200, -300);
-        scene.add(backLight);
+        // Grid Background
+        const grid = new THREE.GridHelper(5000, 100, 0x0055ff, 0x001122);
+        grid.position.y = -400; grid.position.z = -500;
+        scene.add(grid);
+        const gridTop = new THREE.GridHelper(5000, 100, 0x0055ff, 0x001122);
+        gridTop.position.y = 400; gridTop.position.z = -500;
+        scene.add(gridTop);
 
-        // --- POST PROCESSING (Unreal Bloom) ---
+        // Post-Processing (Unreal Bloom for the glowing effect)
         const renderScene = new THREE.RenderPass(scene, camera);
-        // Resolution, strength, radius, threshold
-        const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.8, 0.4, 0.1);
-        
+        const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.1);
         const composer = new THREE.EffectComposer(renderer);
         composer.addPass(renderScene);
         composer.addPass(bloomPass);
 
-        // Cyber Grid Floor
-        const grid = new THREE.GridHelper(4000, 80, 0x002244, 0x001122);
-        grid.position.y = -400;
-        scene.add(grid);
-
         // ==========================================
-        // 2. PROCEDURAL GLSL SHADERS
+        // 2. PROCEDURAL TOPOGRAPHY MESH
         // ==========================================
-        const holoVert = `
-            varying vec3 vNormal; varying vec3 vViewPosition;
-            void main() {
-                vNormal = normalize(normalMatrix * normal);
-                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                vViewPosition = -mvPosition.xyz;
-                gl_Position = projectionMatrix * mvPosition;
-            }
-        `;
-        const holoFrag = `
-            uniform vec3 color; uniform float time;
-            varying vec3 vNormal; varying vec3 vViewPosition;
-            void main() {
-                vec3 normal = normalize(vNormal); vec3 viewDir = normalize(vViewPosition);
-                float fresnel = dot(normal, viewDir);
-                fresnel = clamp(1.0 - fresnel, 0.0, 1.0);
-                fresnel = pow(fresnel, 2.5);
-                float scanline = sin(gl_FragCoord.y * 0.3 + time * 8.0) * 0.1;
-                gl_FragColor = vec4(color * (fresnel + 0.4) + scanline, 0.9);
-            }
-        `;
+        const faceGroup = new THREE.Group();
+        scene.add(faceGroup);
 
-        const uniforms = { color: { value: new THREE.Color(0x002244) }, time: { value: 0.0 } }; // Navy Shader
-        const cyberMat = new THREE.ShaderMaterial({
-            uniforms: uniforms, vertexShader: holoVert, fragmentShader: holoFrag,
-            transparent: true, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false
-        });
-
-        // ==========================================
-        // 3. THE 956-NODE ARCHITECTURE (Nodes + Body)
-        // ==========================================
-        const agentRig = new THREE.Group();
-        scene.add(agentRig);
-
-        // A. 478 Glowing Face Nodes
+        // A. The Vertices (Glowing Dots)
         const nodeGeo = new THREE.BufferGeometry();
         const nodePositions = new Float32Array(478 * 3);
         nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3));
-        const nodeMat = new THREE.PointsMaterial({ color: 0x69BE28, size: 5, transparent: true, opacity: 1.0, blending: THREE.AdditiveBlending });
+        
+        const nodeMat = new THREE.PointsMaterial({ color: 0x00f0ff, size: 2.5, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending });
         const faceNodes = new THREE.Points(nodeGeo, nodeMat);
-        agentRig.add(faceNodes);
+        faceGroup.add(faceNodes);
 
-        // B. Cyber-Skeleton
-        const skeleton = new THREE.Group();
-        agentRig.add(skeleton);
-
-        const neckGeo = new THREE.CylinderGeometry(40, 50, 140, 16);
-        const neck = new THREE.Mesh(neckGeo, cyberMat);
-        skeleton.add(neck);
-
-        const torsoGeo = new THREE.BoxGeometry(320, 240, 100);
-        const torso = new THREE.Mesh(torsoGeo, cyberMat);
-        const torsoTrim = new THREE.LineSegments(new THREE.EdgesGeometry(torsoGeo), new THREE.LineBasicMaterial({ color: 0x69BE28, linewidth: 2 }));
-        torso.add(torsoTrim);
-        skeleton.add(torso);
-
-        // C. Deployable Tongue
-        const tongueGeo = new THREE.CapsuleGeometry(16, 45, 4, 32);
-        const tongueMat = new THREE.MeshStandardMaterial({ color: 0xff0055, roughness: 0.2, emissive: 0x440011 });
-        const tongue = new THREE.Mesh(tongueGeo, tongueMat);
-        tongue.rotation.x = Math.PI / 2;
-        tongue.scale.set(0.01, 0.01, 0.01); // Hidden
-        agentRig.add(tongue);
-
-        // D. High-Poly Joora / Patka Anchor
-        const headwear = new THREE.Group();
-        agentRig.add(headwear);
-
-        const domeGeo = new THREE.SphereGeometry(95, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.55);
-        const dome = new THREE.Mesh(domeGeo, cyberMat);
-        dome.rotation.x = -0.2;
+        // B. The Topography Wireframe
+        // We algorithmically connect adjacent nodes to create a 3D web over the face
+        const wireMat = new THREE.LineBasicMaterial({ color: 0x0055ff, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending });
         
-        const knotGeo = new THREE.TorusGeometry(30, 16, 16, 32);
-        const knot = new THREE.Mesh(knotGeo, cyberMat);
-        knot.position.set(0, 90, -20); knot.rotation.x = Math.PI / 2;
+        const indexArray = [];
+        // Approximate a grid connection for the 478 nodes
+        for(let i=0; i<470; i+=2) { indexArray.push(i, i+1, i+1, i+2, i+2, i); }
+        nodeGeo.setIndex(indexArray);
         
-        headwear.add(dome); headwear.add(knot);
+        const faceWireframe = new THREE.LineSegments(nodeGeo, wireMat);
+        faceGroup.add(faceWireframe);
 
         // ==========================================
-        // 4. ML TRACKING LOGIC & LERPING
+        // 3. HARDWARE UPLINK (A/V Streams)
+        // ==========================================
+        const videoElement = document.getElementById('video-feed');
+        let audioContext, analyser, dataArray;
+        let currentVolume = 0;
+
+        // Request Both Video AND Audio
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then((stream) => {
+                videoElement.srcObject = stream;
+                
+                // Initialize Web Audio API
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(stream);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                source.connect(analyser);
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                initAI(); // Start Machine Learning
+            })
+            .catch((err) => {
+                console.error("Hardware Access Denied:", err);
+                document.getElementById('sys-state').innerText = "ACCESS DENIED";
+                document.getElementById('sys-state').style.color = "#ff003c";
+            });
+
+        // ==========================================
+        // 4. ML TRACKING & LERP SMOOTHING
         // ==========================================
         let smoothedPos = new Float32Array(478 * 3);
-        let smoothedMouth = 0;
 
-        function calculateEAR(landmarks) {
-            const top = landmarks[159]; const bot = landmarks[145];
-            const inr = landmarks[133]; const out = landmarks[33];
-            const h = Math.sqrt(Math.pow(top.x - bot.x, 2) + Math.pow(top.y - bot.y, 2));
-            const w = Math.sqrt(Math.pow(inr.x - out.x, 2) + Math.pow(inr.y - out.y, 2));
-            return h / w;
+        function initAI() {
+            const faceMesh = new FaceMesh({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
+            faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.65, minTrackingConfidence: 0.65 });
+
+            faceMesh.onResults((results) => {
+                document.getElementById('loading').style.display = 'none';
+
+                if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+                    document.getElementById('sys-state').innerText = "DATA SYNCED";
+                    document.getElementById('sys-state').style.color = "#00f0ff";
+                    document.getElementById('nodes-tracked').innerText = "478 / 478";
+
+                    const landmarks = results.multiFaceLandmarks[0];
+                    const rawPos = faceNodes.geometry.attributes.position.array;
+
+                    // 1. Calculate Spatial Coordinates & Apply Linear Interpolation
+                    for (let i = 0; i < landmarks.length; i++) {
+                        // Expand the nodes into a 3D space (-800 to 800 roughly)
+                        const tx = (landmarks[i].x - 0.5) * -1200; 
+                        const ty = (landmarks[i].y - 0.5) * -1200;
+                        const tz = landmarks[i].z * 1200;
+
+                        // Lerp for smooth tracking (0.6 is the stiffness factor)
+                        smoothedPos[i*3] += (tx - smoothedPos[i*3]) * 0.6;
+                        smoothedPos[i*3+1] += (ty - smoothedPos[i*3+1]) * 0.6;
+                        smoothedPos[i*3+2] += (tz - smoothedPos[i*3+2]) * 0.6;
+
+                        // Apply audio reactivity to the Z-depth (makes the face pulse forward on loud sounds)
+                        const audioBump = (currentVolume * 0.15) * (1.0 - Math.abs(landmarks[i].z)); 
+
+                        rawPos[i*3] = smoothedPos[i*3];
+                        rawPos[i*3+1] = smoothedPos[i*3+1];
+                        rawPos[i*3+2] = smoothedPos[i*3+2] + audioBump;
+                    }
+                    faceNodes.geometry.attributes.position.needsUpdate = true;
+
+                    // 2. Spatial Telemetry Math
+                    const lEye = landmarks[133]; const rEye = landmarks[362]; const chin = landmarks[152]; const nose = landmarks[1];
+                    const pitch = Math.atan2(chin.z - lEye.z, chin.y - lEye.y);
+                    const yaw = Math.atan2(rEye.z - lEye.z, rEye.x - lEye.x);
+                    const roll = Math.atan2(rEye.y - lEye.y, rEye.x - lEye.x);
+
+                    document.getElementById('val-pitch').innerText = (pitch * (180/Math.PI)).toFixed(2) + "°";
+                    document.getElementById('val-yaw').innerText = (yaw * (180/Math.PI)).toFixed(2) + "°";
+                    document.getElementById('val-roll').innerText = (roll * (180/Math.PI)).toFixed(2) + "°";
+                    document.getElementById('val-depth').innerText = (nose.z * 1000).toFixed(2);
+
+                    // 3. Eye Aspect Ratio (Blink Detection)
+                    const earH = Math.abs(landmarks[159].y - landmarks[145].y);
+                    const earW = Math.abs(landmarks[133].x - landmarks[33].x);
+                    const isBlink = (earH / earW) < 0.22;
+                    document.getElementById('val-eyes').innerText = isBlink ? "CLOSED" : "TRACKING";
+                    document.getElementById('val-eyes').style.color = isBlink ? "#ff003c" : "#00f0ff";
+
+                    // Slowly rotate the entire face group slightly based on yaw for 3D depth effect
+                    faceGroup.rotation.y = yaw * 0.2;
+                    faceGroup.rotation.x = pitch * 0.2;
+
+                } else {
+                    document.getElementById('sys-state').innerText = "SEARCHING";
+                    document.getElementById('sys-state').style.color = "#ff003c";
+                }
+            });
+
+            const cam = new Camera(videoElement, { onFrame: async () => { await faceMesh.send({image: videoElement}); }, width: 640, height: 480 });
+            cam.start();
         }
 
-        const faceMesh = new FaceMesh({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
-        faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.65, minTrackingConfidence: 0.65 });
-
-        faceMesh.onResults((results) => {
-            document.getElementById('loading').style.display = 'none';
-
-            if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-                document.getElementById('sys-state').innerText = "TRACKING LOCKED";
-                document.getElementById('sys-state').style.color = "#69BE28";
-                document.getElementById('nodes-tracked').innerText = "478 / 478";
-
-                const landmarks = results.multiFaceLandmarks[0];
-                const rawPos = faceNodes.geometry.attributes.position.array;
-                let cx = 0, cy = 0, cz = 0, chinX = 0, chinY = 0, chinZ = 0, mouthX = 0, mouthY = 0, mouthZ = 0;
-
-                // 1. Process Nodes with Linear Interpolation
-                for (let i = 0; i < landmarks.length; i++) {
-                    const tx = (landmarks[i].x - 0.5) * -1300; 
-                    const ty = (landmarks[i].y - 0.5) * -1300;
-                    const tz = landmarks[i].z * 1300;
-
-                    smoothedPos[i*3] += (tx - smoothedPos[i*3]) * 0.6;
-                    smoothedPos[i*3+1] += (ty - smoothedPos[i*3+1]) * 0.6;
-                    smoothedPos[i*3+2] += (tz - smoothedPos[i*3+2]) * 0.6;
-
-                    rawPos[i*3] = smoothedPos[i*3];
-                    rawPos[i*3+1] = smoothedPos[i*3+1];
-                    rawPos[i*3+2] = smoothedPos[i*3+2];
-
-                    if (i === 1) { cx = rawPos[i*3]; cy = rawPos[i*3+1]; cz = rawPos[i*3+2]; } 
-                    if (i === 152) { chinX = rawPos[i*3]; chinY = rawPos[i*3+1]; chinZ = rawPos[i*3+2]; } 
-                    if (i === 13) { mouthX = rawPos[i*3]; mouthY = rawPos[i*3+1]; mouthZ = rawPos[i*3+2]; } 
-                }
-                faceNodes.geometry.attributes.position.needsUpdate = true;
-
-                // 2. Telemetry (Atan2 Trig)
-                const pitch = Math.atan2(landmarks[152].z - landmarks[133].z, landmarks[152].y - landmarks[133].y);
-                const yaw = Math.atan2(landmarks[362].z - landmarks[133].z, landmarks[362].x - landmarks[133].x);
-                const roll = Math.atan2(landmarks[362].y - landmarks[133].y, landmarks[362].x - landmarks[133].x);
-
-                document.getElementById('val-pitch').innerText = (pitch * (180/Math.PI)).toFixed(1) + "°";
-                document.getElementById('val-yaw').innerText = (yaw * (180/Math.PI)).toFixed(1) + "°";
-                document.getElementById('val-roll').innerText = (roll * (180/Math.PI)).toFixed(1) + "°";
-
-                // 3. Blink Detection
-                const ear = calculateEAR(landmarks);
-                document.getElementById('val-eyes').innerText = ear < 0.22 ? "CLOSED" : "OPEN";
-                document.getElementById('val-eyes').style.color = ear < 0.22 ? "#ff0055" : "#69BE28";
-
-                // 4. Tongue Trigger Logic
-                const targetMouthDist = Math.abs(landmarks[13].y - landmarks[14].y);
-                smoothedMouth += (targetMouthDist - smoothedMouth) * 0.4;
-                document.getElementById('val-mouth').innerText = (smoothedMouth * 100).toFixed(2) + " mm";
-                
-                if (smoothedMouth > 0.055) {
-                    const ext = Math.min((smoothedMouth - 0.055) * 18, 1.8);
-                    tongue.scale.set(ext, ext, ext);
-                    tongue.position.set(mouthX, mouthY - 12, mouthZ + (ext * 18));
-                    tongue.rotation.set(pitch + (Math.PI/2), yaw, roll);
-                    document.getElementById('tongue-alert').style.display = 'block';
-                } else {
-                    tongue.scale.set(0.01, 0.01, 0.01);
-                    document.getElementById('tongue-alert').style.display = 'none';
-                }
-
-                // 5. Apply Rig Rotations
-                neck.position.set(chinX, chinY - 50, chinZ - 40);
-                neck.rotation.set(pitch, yaw, roll);
-
-                torso.position.set(chinX, chinY - 220, chinZ - 60);
-                torso.rotation.set(0, yaw * 0.4, roll * 0.2);
-
-                headwear.position.set(rawPos[10*3], rawPos[10*3+1] + 20, rawPos[10*3+2] - 20);
-                headwear.rotation.set(pitch + 0.1, yaw, roll);
-
-            } else {
-                document.getElementById('sys-state').innerText = "TARGET LOST";
-                document.getElementById('sys-state').style.color = "#ff0055";
-            }
-        });
-
-        const videoElement = document.getElementById('video-feed');
-        const cam = new Camera(videoElement, {
-            onFrame: async () => { await faceMesh.send({image: videoElement}); },
-            width: 1280, height: 720
-        });
-        cam.start();
-
         // ==========================================
-        // 5. RENDER LOOP (WITH BLOOM)
+        // 5. RENDER & AUDIO PROCESSING LOOP
         // ==========================================
         function animate() {
             requestAnimationFrame(animate);
-            uniforms.time.value += 0.01;
-            grid.position.z = (Date.now() * 0.1) % 100;
             
-            // Render via Post-Processing Composer instead of standard renderer
+            // Environment Animation
+            grid.position.z = (Date.now() * 0.1) % 100;
+            gridTop.position.z = (Date.now() * 0.1) % 100;
+
+            // Audio Processing
+            if (analyser) {
+                analyser.getByteFrequencyData(dataArray);
+                let sum = 0;
+                for(let i = 0; i < dataArray.length; i++) { sum += dataArray[i]; }
+                currentVolume = sum / dataArray.length;
+
+                // Update UI Meter
+                document.getElementById('aud-level').innerText = currentVolume.toFixed(1) + " dB";
+                document.getElementById('audio-bar').style.width = Math.min((currentVolume / 150) * 100, 100) + "%";
+
+                // Audio Reactive Bloom (GPU lighting intensifies with volume)
+                bloomPass.strength = 1.2 + (currentVolume * 0.02);
+            }
+
             composer.render();
         }
         animate();
