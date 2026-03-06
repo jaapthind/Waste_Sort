@@ -3,1046 +3,493 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated Galaxy Avatar Studio</title>
+    <title>Galaxy Avatar Creator Ultimate</title>
     <style>
-        /* --- MASSIVE CSS STYLESHEET --- */
         :root {
-            --bg-deep: #050508;
-            --panel-bg: #12121a;
-            --accent: #ff0055;
-            --accent-glow: #ff005588;
-            --text-main: #f0f0f0;
-            --text-muted: #7a7a8c;
-            --border-color: #2a2a35;
+            --bg-primary: #f8f9fa;
+            --text-primary: #212529;
+            --accent-color: #007bff;
+            --panel-bg: #ffffff;
+            --shadow-soft: 0 4px 12px rgba(0,0,0,0.05);
         }
-
-        * { box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-deep);
-            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, var(--bg-deep) 70%);
-            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             margin: 0;
-            padding: 2vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .app-wrapper {
-            display: flex;
-            background: rgba(18, 18, 26, 0.85);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.05);
-            width: 1600px;
-            max-width: 98vw;
-            height: 94vh;
-            overflow: hidden;
-        }
-
-        /* --- UI PANELS --- */
-        .controls-container {
-            flex: 1.2;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid var(--border-color);
-            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
         }
 
-        .header {
-            padding: 25px 30px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            background: linear-gradient(90deg, #fff, var(--text-muted));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .tabs {
+        /* --- INTRO SCREEN --- */
+        #intro-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
             display: flex;
-            padding: 0 10px;
-            background: #0a0a0f;
-            border-bottom: 1px solid var(--border-color);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.5s ease-out;
         }
 
-        .tab {
-            padding: 15px 20px;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s;
-            border-bottom: 2px solid transparent;
-        }
-
-        .tab.active {
-            color: var(--accent);
-            border-bottom: 2px solid var(--accent);
-        }
-
-        .scroll-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 30px;
-        }
-
-        .control-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: grid; }
-
-        /* --- INPUT ELEMENTS --- */
-        .input-group {
-            background: rgba(0,0,0,0.3);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.03);
-            transition: 0.2s;
-        }
-
-        .input-group:hover {
-            border-color: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        select, input[type="color"] {
-            width: 100%;
-            padding: 12px;
-            background: #1a1a24;
-            border: 1px solid #333;
+        #intro-screen h1 {
+            font-size: 3rem;
             color: white;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            outline: none;
-            transition: 0.2s;
-            appearance: none;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
         }
 
-        select:focus { border-color: var(--accent); }
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            background: white;
+            color: var(--accent-color);
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .start-btn:hover { transform: scale(1.05); }
 
-        input[type="range"] {
+        /* --- MAIN APP --- */
+        #app-container {
+            display: flex;
+            flex-direction: column;
             width: 100%;
-            height: 6px;
-            background: #333;
-            border-radius: 3px;
-            outline: none;
-            -webkit-appearance: none;
+            max-width: 500px;
+            height: 100vh;
+            background: var(--panel-bg);
+            box-shadow: var(--shadow-soft);
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
         }
 
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--accent);
-            cursor: pointer;
-            box-shadow: 0 0 10px var(--accent-glow);
+        /* HEADER */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
         }
+        .header h2 { margin: 0; font-size: 1.2rem; }
+        .icon-btn { font-size: 1.5rem; background: none; border: none; cursor: pointer; }
 
-        /* --- PREVIEW & CAMERA PANEL --- */
-        .preview-container {
+        /* MAIN CONTENT */
+        .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            padding: 20px;
             position: relative;
         }
 
-        .canvas-wrapper {
-            position: relative;
-            width: 500px;
-            height: 500px;
+        /* AVATAR DISPLAY */
+        .avatar-wrapper {
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
-            padding: 10px;
-            background: linear-gradient(135deg, #333, #000);
-            box-shadow: 0 0 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05);
-            margin-bottom: 40px;
+            background: #d4fc79; /* Light green background from image */
+            background: linear-gradient(to bottom, #d4fc79 0%, #96e6a1 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
 
         canvas {
-            border-radius: 50%;
             width: 100%;
             height: 100%;
-            background: #000;
-            cursor: crosshair;
         }
 
-        .btn {
-            background: linear-gradient(45deg, var(--accent), #ff3377);
-            color: white;
+        .edit-btn {
+            padding: 12px 40px;
+            font-size: 1rem;
             border: none;
-            padding: 16px 32px;
-            font-size: 15px;
-            font-weight: 800;
-            border-radius: 12px;
+            border-radius: 25px;
+            background: #e9ecef;
+            color: var(--text-primary);
+            font-weight: 600;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            box-shadow: 0 10px 20px var(--accent-glow);
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 100%;
-            max-width: 400px;
+            transition: background 0.2s;
         }
+        .edit-btn:hover { background: #dde2e6; }
 
-        .btn:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 30px var(--accent-glow);
-        }
-
-        /* --- CAMERA OVERLAY --- */
-        .cam-module {
+        /* SIDE BUTTONS */
+        .side-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 240px;
-            background: rgba(0,0,0,0.8);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 15px;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-
-        .cam-module h3 { margin: 0 0 10px 0; font-size: 12px; color: var(--accent); }
-
-        #video-feed {
-            width: 100%;
-            border-radius: 8px;
-            background: #111;
-            transform: scaleX(-1);
-            display: none;
-            border: 1px solid #333;
-        }
-
-        .cam-status {
-            font-size: 11px;
-            color: #888;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .cam-btn {
-            background: #2a2a35;
-            color: white;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 5px;
-            font-size: 12px;
-        }
-        .cam-btn:hover { background: #3a3a45; }
-        .cam-btn.snap { background: var(--accent); display: none; }
-
-        /* Flash */
-        #flash-fx {
-            position: absolute;
-            inset: 0;
-            background: white;
+            width: 50px; height: 50px;
             border-radius: 50%;
-            opacity: 0;
-            pointer-events: none;
+            background: #f1f3f5;
+            border: none;
+            font-size: 1.5rem;
+            color: #adb5bd;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        @keyframes flash-bang {
-            0% { opacity: 1; transform: scale(1.05); }
-            100% { opacity: 0; transform: scale(1); }
-        }
+        .btn-plus { left: 20px; top: 50%; transform: translateY(-50%); }
+        .btn-more { right: 50px; bottom: 80px; background: #e9ecef; color: #495057; width: 40px; height: 40px; font-size: 1.2rem;}
 
-        /* Custom Scrollbars */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+        /* CAMERA OVERLAY */
+        #camera-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        #video-feed { width: 90%; max-width: 400px; border-radius: 15px; transform: scaleX(-1); }
+        .snap-btn {
+            margin-top: 20px; padding: 15px 30px;
+            background: var(--accent-color); color: white;
+            border: none; border-radius: 30px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+        }
+        #flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; z-index: 300; }
     </style>
 </head>
 <body>
 
-    <div class="app-wrapper">
-        
-        <div class="controls-container">
-            <div class="header">
-                <h1>Avatar Studio Pro</h1>
-            </div>
+    <div id="intro-screen">
+        <h1>Galaxy Avatar</h1>
+        <button class="start-btn" onclick="startApp()">Create My Avatar</button>
+    </div>
 
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('tab-face')">Genetics</div>
-                <div class="tab" onclick="switchTab('tab-style')">Style & Hair</div>
-                <div class="tab" onclick="switchTab('tab-fx')">World FX</div>
-            </div>
-
-            <div class="scroll-area">
-                <div id="tab-face" class="tab-content control-grid active">
-                    <div class="input-group">
-                        <label>Base Structure</label>
-                        <select id="gender">
-                            <option value="neutral">Androgynous Soft</option>
-                            <option value="masc">Masculine Strong</option>
-                            <option value="fem">Feminine Pointed</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Skin Tone</label>
-                        <input type="color" id="skinTone" value="#f1c27d">
-                    </div>
-                    <div class="input-group" style="grid-column: 1 / -1;">
-                        <label>Jaw Width Slider</label>
-                        <input type="range" id="faceWidth" min="85" max="135" value="110">
-                    </div>
-                    <div class="input-group">
-                        <label>Eye Shape</label>
-                        <select id="eyeStyle">
-                            <option value="1">Almond / Standard</option>
-                            <option value="2">Sharp / Focused</option>
-                            <option value="3">Sleepy / Heavy</option>
-                            <option value="4">Anime / Starry</option>
-                            <option value="5">Wide / Surprised</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Iris Color</label>
-                        <input type="color" id="eyeColor" value="#00ffcc">
-                    </div>
-                    <div class="input-group">
-                        <label>Nose Bridge</label>
-                        <select id="noseStyle">
-                            <option value="1">Subtle Button</option>
-                            <option value="2">Angular / Roman</option>
-                            <option value="3">Wide Base</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Expression (Mouth)</label>
-                        <select id="mouthStyle">
-                            <option value="1">Confident Smirk</option>
-                            <option value="2">Neutral Line</option>
-                            <option value="3">Happy Grin</option>
-                            <option value="4">Shocked</option>
-                            <option value="5">Frown</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div id="tab-style" class="tab-content control-grid">
-                    <div class="input-group">
-                        <label>Headwear</label>
-                        <select id="headwear">
-                            <option value="0">None (Show Hair)</option>
-                            <option value="1">Snapback Cap</option>
-                            <option value="2">Street Beanie</option>
-                            <option value="3">Traditional Joora/Turban</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Hair Style</label>
-                        <select id="hairStyle">
-                            <option value="0">Shaved / Bald</option>
-                            <option value="1">Clean Fade</option>
-                            <option value="2">Anime Spikes</option>
-                            <option value="3">Long Waves</option>
-                            <option value="4">High Bun</option>
-                            <option value="5">Modern Undercut</option>
-                        </select>
-                    </div>
-                    <div class="input-group" style="grid-column: 1 / -1;">
-                        <label>Hair / Headwear Pigment</label>
-                        <input type="color" id="hairColor" value="#111111">
-                    </div>
-                    <div class="input-group">
-                        <label>Facial Hair</label>
-                        <select id="facialHair">
-                            <option value="0">Clean Shaven</option>
-                            <option value="1">5 O'Clock Stubble</option>
-                            <option value="2">Sharp Goatee</option>
-                            <option value="3">Lumberjack Beard</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Eyewear</label>
-                        <select id="glasses">
-                            <option value="0">20/20 Vision (None)</option>
-                            <option value="1">Harry Potter Rounds</option>
-                            <option value="2">Cyberpunk LED Visor</option>
-                            <option value="3">Aviator Shades</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Wardrobe</label>
-                        <select id="clothingStyle">
-                            <option value="1">Tech Hoodie</option>
-                            <option value="2">V-Neck Casual</option>
-                            <option value="3">Executive Suit</option>
-                            <option value="4">Pro Sports Jersey</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Apparel Primary</label>
-                        <input type="color" id="clothingColor1" value="#002244">
-                    </div>
-                    <div class="input-group">
-                        <label>Apparel Accent</label>
-                        <input type="color" id="clothingColor2" value="#69BE28">
-                    </div>
-                </div>
-
-                <div id="tab-fx" class="tab-content control-grid">
-                    <div class="input-group" style="grid-column: 1 / -1;">
-                        <label>Environment Theme</label>
-                        <select id="bgTheme">
-                            <option value="space">Deep Space Nebula</option>
-                            <option value="cyber">Cyberpunk Grid</option>
-                            <option value="studio">Studio Gradient</option>
-                            <option value="solid">Solid Color</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Backdrop Color 1</label>
-                        <input type="color" id="bgColor1" value="#1a0b2e">
-                    </div>
-                    <div class="input-group">
-                        <label>Backdrop Color 2</label>
-                        <input type="color" id="bgColor2" value="#4a154b">
-                    </div>
-                    <div class="input-group">
-                        <label>Particle Density</label>
-                        <input type="range" id="particleCount" min="0" max="200" value="80">
-                    </div>
-                    <div class="input-group">
-                        <label>Enable Breathing Animation</label>
-                        <select id="animState">
-                            <option value="1">On (Alive)</option>
-                            <option value="0">Off (Static)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+    <div id="app-container">
+        <div class="header">
+            <button class="icon-btn">〈</button>
+            <h2>Galaxy Avatar</h2>
+            <button class="icon-btn" onclick="openCamera()">⋮</button>
         </div>
 
-        <div class="preview-container">
+        <div class="main-content">
+            <button class="side-btn btn-plus">+</button>
             
-            <div class="cam-module">
-                <h3>📷 AI Vision System</h3>
-                <div class="cam-status" id="cam-status">Camera Offline. Use secure HTTPS (GitHub Pages) to enable.</div>
-                <video id="video-feed" autoplay playsinline></video>
-                <button class="cam-btn" id="btn-start-cam">Initialize Camera</button>
-                <button class="cam-btn snap" id="btn-snap">Extract DNA (Auto-Gen)</button>
+            <div class="avatar-wrapper">
+                <canvas id="avatarCanvas" width="600" height="600"></canvas>
             </div>
+            <button class="side-btn btn-more">⋯</button>
 
-            <div class="canvas-wrapper">
-                <canvas id="renderCanvas" width="800" height="800"></canvas>
-                <div id="flash-fx"></div>
-            </div>
-            
-            <button class="btn" id="btn-export">Export 800x800 HD Render</button>
+            <button class="edit-btn" onclick="openCamera()">Edit / New Snap</button>
         </div>
     </div>
 
-    <script>
-        // --- 1. TAB LOGIC ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
-        }
+    <div id="camera-modal">
+        <video id="video-feed" autoplay playsinline></video>
+        <button class="snap-btn" onclick="snapAndGenerate()">📸 Snap & Create Realistic Avatar</button>
+    </div>
+    <div id="flash"></div>
 
-        // --- 2. ENGINE SETUP ---
-        const canvas = document.getElementById('renderCanvas');
+    <script>
+        // --- 1. SETUP & STATE ---
+        const canvas = document.getElementById('avatarCanvas');
         const ctx = canvas.getContext('2d');
         const cx = canvas.width / 2;
         const cy = canvas.height / 2;
 
-        // --- 3. STATE MANAGEMENT ---
         let state = {
-            gender: 'neutral', skinTone: '#f1c27d', faceWidth: 110,
-            eyeStyle: 1, eyeColor: '#00ffcc', noseStyle: 1, mouthStyle: 1,
-            headwear: 0, hairStyle: 5, hairColor: '#111111', facialHair: 0,
-            glasses: 0, clothingStyle: 4, clothingColor1: '#002244', clothingColor2: '#69BE28',
-            bgTheme: 'space', bgColor1: '#1a0b2e', bgColor2: '#4a154b',
-            particleCount: 80, animState: 1
+            skinTone: '#f5d0b0',
+            hairColor: '#e6cba3', // Blonde from image
+            eyeColor: '#5c4033', // Brown
+            hairStyle: 'long_wavy',
+            eyeStyle: 'soft',
+            mouthStyle: 'smile'
         };
 
-        // Attach listeners to update state instantly
-        Object.keys(state).forEach(key => {
-            const el = document.getElementById(key);
-            if(el) {
-                el.addEventListener('input', (e) => {
-                    let val = e.target.value;
-                    if(['faceWidth','eyeStyle','noseStyle','mouthStyle','headwear','hairStyle','facialHair','glasses','clothingStyle','particleCount','animState'].includes(key)) {
-                        val = parseInt(val);
-                    }
-                    state[key] = val;
-                    if(key === 'particleCount') initParticles();
-                });
-            }
-        });
+        // --- 2. APP FLOW ---
+        function startApp() {
+            document.getElementById('intro-screen').style.opacity = 0;
+            setTimeout(() => {
+                document.getElementById('intro-screen').style.display = 'none';
+                document.getElementById('app-container').style.opacity = 1;
+                renderAvatar(); // Render default on start
+            }, 500);
+        }
 
-        // --- 4. ANIMATION GLOBALS ---
-        let time = 0;
-        let blinkTimer = 0;
-        let isBlinking = false;
-        let particles = [];
-
-        // --- 5. PARTICLE SYSTEM ---
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 3 + 1;
-                this.speedY = Math.random() * 1 - 0.5;
-                this.speedX = Math.random() * 1 - 0.5;
-                this.alpha = Math.random() * 0.5 + 0.1;
-            }
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX;
-                if (this.y < 0 || this.y > canvas.height || this.x < 0 || this.x > canvas.width) {
-                    this.reset();
-                }
-            }
-            draw() {
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1.0;
+        let stream;
+        async function openCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                const video = document.getElementById('video-feed');
+                video.srcObject = stream;
+                document.getElementById('camera-modal').style.display = 'flex';
+            } catch (err) {
+                alert("Camera access denied. Please ensure you're on HTTPS.");
             }
         }
 
-        function initParticles() {
-            particles = [];
-            for(let i=0; i<state.particleCount; i++) {
-                particles.push(new Particle());
-            }
-        }
-        initParticles();
+        function snapAndGenerate() {
+            const video = document.getElementById('video-feed');
+            const flash = document.getElementById('flash');
+            
+            // Flash FX
+            flash.style.opacity = 1;
+            setTimeout(() => flash.style.opacity = 0, 300);
 
-        // --- 6. ADVANCED SHADING HELPERS ---
-        function shadeColor(color, percent) {
-            let R = parseInt(color.substring(1,3),16);
-            let G = parseInt(color.substring(3,5),16);
-            let B = parseInt(color.substring(5,7),16);
-            R = parseInt(R * (100 + percent) / 100);
-            G = parseInt(G * (100 + percent) / 100);
-            B = parseInt(B * (100 + percent) / 100);
-            R = (R<255)?R:255;  G = (G<255)?G:255;  B = (B<255)?B:255;
-            let RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-            let GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-            let BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
-            return "#"+RR+GG+BB;
+            // 1. Capture & Analyze
+            const hiddenCanvas = document.createElement('canvas');
+            const hctx = hiddenCanvas.getContext('2d');
+            hiddenCanvas.width = video.videoWidth; hiddenCanvas.height = video.videoHeight;
+            hctx.drawImage(video, 0, 0);
+            
+            // Sample multiple facial points for better skin tone guess
+            const p1 = hctx.getImageData(hiddenCanvas.width/2, hiddenCanvas.height/2, 1, 1).data; // center
+            const p2 = hctx.getImageData(hiddenCanvas.width/2 - 50, hiddenCanvas.height/2 + 50, 1, 1).data; // cheek
+            const avgR = (p1[0]+p2[0])/2, avgG = (p1[1]+p2[1])/2, avgB = (p1[2]+p2[2])/2;
+            state.skinTone = `rgb(${avgR},${avgG},${avgB})`;
+
+            // 2. "Realistic" Randomization (Simulating AI choice)
+            const hairStyles = ['long_wavy', 'bob_cut', 'shoulder_layed'];
+            state.hairStyle = hairStyles[Math.floor(Math.random() * hairStyles.length)];
+            // Hair color guess (simplified: dark or light based on brightness)
+            const brightness = (avgR*299 + avgG*587 + avgB*114) / 1000;
+            state.hairColor = brightness > 128 ? '#e6cba3' : '#4a3021';
+
+            // 3. Close & Render
+            if (stream) stream.getTracks().forEach(track => track.stop());
+            document.getElementById('camera-modal').style.display = 'none';
+            renderAvatar();
         }
 
-        function createSkinGradient(x, y, r) {
-            let grad = ctx.createRadialGradient(x, y-20, r*0.2, x, y, r);
-            grad.addColorStop(0, shadeColor(state.skinTone, 10)); // Highlight
-            grad.addColorStop(0.7, state.skinTone); // Mid
-            grad.addColorStop(1, shadeColor(state.skinTone, -25)); // Shadow
-            return grad;
-        }
-
-        // --- 7. RENDER ENGINE (CALLED 60FPS) ---
-        function renderLoop() {
+        // --- 3. ADVANCED RENDERING ENGINE ---
+        function renderAvatar() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Time math for breathing
-            time += 0.05;
-            let breathY = state.animState ? Math.sin(time) * 5 : 0;
-            
-            // Blink logic
-            blinkTimer++;
-            if (blinkTimer > 180 && Math.random() > 0.9) {
-                isBlinking = true;
-                blinkTimer = 0;
-            }
-            if (isBlinking && blinkTimer > 10) isBlinking = false;
+            // No background needed, handled by CSS container
 
-            drawBackground();
-            
-            // Draw particles behind character
-            if(state.bgTheme === 'space') {
-                particles.forEach(p => { p.update(); p.draw(); });
-            }
-
-            // Draw Character Parts
-            ctx.save();
-            ctx.translate(0, breathY); // Shoulders move down
-            drawBody();
-            ctx.restore();
-
-            drawNeck();
-
-            ctx.save();
-            ctx.translate(0, breathY * 0.4); // Head moves slightly less
-            drawHeadBase();
+            // Draw from back to front
             drawHairBack();
-            drawFacialHairBase();
-            drawEyes();
-            drawNose();
-            drawMouth();
-            drawFacialHairFront();
-            
-            if (state.headwear === 0) drawHairFront();
-            else drawHeadwear();
-            
-            drawGlasses();
-            ctx.restore();
-
-            requestAnimationFrame(renderLoop);
+            drawBody();
+            drawHeadRealistic();
+            drawFeaturesRealistic();
+            drawHairFrontRealistic();
         }
 
-        // --- 8. DRAWING FUNCTIONS ---
-        function drawBackground() {
-            if (state.bgTheme === 'solid') {
-                ctx.fillStyle = state.bgColor1;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            } else if (state.bgTheme === 'studio') {
-                let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                grad.addColorStop(0, state.bgColor1);
-                grad.addColorStop(1, state.bgColor2);
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            } else if (state.bgTheme === 'space') {
-                let grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, canvas.width);
-                grad.addColorStop(0, state.bgColor2);
-                grad.addColorStop(1, '#050510');
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            } else if (state.bgTheme === 'cyber') {
-                ctx.fillStyle = '#0a0a15';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.strokeStyle = state.bgColor1;
-                ctx.lineWidth = 2;
-                ctx.globalAlpha = 0.3;
-                // Grid perspective
-                for(let i=0; i<canvas.width; i+=40) {
-                    ctx.beginPath(); ctx.moveTo(i, cy); ctx.lineTo(i + (i-cx)*2, canvas.height); ctx.stroke();
-                }
-                for(let i=cy; i<canvas.height; i+=Math.pow((i-cy)/10, 1.5)) {
-                    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
-                }
-                ctx.globalAlpha = 1.0;
-            }
+        // Helper: Color luminocity shift
+        function shade(col, amt) {
+            let usePound = false;
+            if (col[0] == "#") { col = col.slice(1); usePound = true; }
+            let num = parseInt(col,16);
+            let r = (num >> 16) + amt; if (r > 255) r = 255; else if  (r < 0) r = 0;
+            let g = ((num >> 8) & 0x00FF) + amt; if (g > 255) g = 255; else if  (g < 0) g = 0;
+            let b = (num & 0x0000FF) + amt; if (b > 255) b = 255; else if  (b < 0) b = 0;
+            return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16).padStart(6,'0');
         }
-
-        function drawNeck() {
-            let neckGrad = ctx.createLinearGradient(cx, cy+50, cx, cy+150);
-            neckGrad.addColorStop(0, shadeColor(state.skinTone, -40)); // Deep shadow under chin
-            neckGrad.addColorStop(1, state.skinTone);
-            ctx.fillStyle = neckGrad;
-            ctx.fillRect(cx - 45, cy + 80, 90, 120);
+        // Helper: RGB to Hex for shading function
+        function rgbToHex(rgb) {
+            if(rgb.startsWith('#')) return rgb;
+            let [r,g,b] = rgb.match(/\d+/g).map(Number);
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
         }
 
         function drawBody() {
-            let by = cy + 180;
+            // Realistic neck shadow
+            let neckGrad = ctx.createRadialGradient(cx, cy + 140, 30, cx, cy + 140, 80);
+            neckGrad.addColorStop(0, shade(rgbToHex(state.skinTone), -60));
+            neckGrad.addColorStop(1, state.skinTone);
+            ctx.fillStyle = neckGrad;
+            ctx.fillRect(cx - 40, cy + 120, 80, 100);
+
+            // White Shirt with soft shading
+            let shirtGrad = ctx.createLinearGradient(cx, cy+180, cx, canvas.height);
+            shirtGrad.addColorStop(0, '#ffffff');
+            shirtGrad.addColorStop(1, '#f0f0f0');
+            ctx.fillStyle = shirtGrad;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy + 180);
+            ctx.quadraticCurveTo(cx - 80, cy + 200, cx - 150, canvas.height);
+            ctx.lineTo(cx + 150, canvas.height);
+            ctx.quadraticCurveTo(cx + 80, cy + 200, cx, cy + 180);
+            ctx.fill();
             
-            // Hoodie / Crewneck
-            if (state.clothingStyle === 1) { 
-                let g = ctx.createRadialGradient(cx, by, 50, cx, by, 300);
-                g.addColorStop(0, shadeColor(state.clothingColor1, 20));
-                g.addColorStop(1, shadeColor(state.clothingColor1, -30));
-                ctx.fillStyle = g;
-                ctx.beginPath();
-                ctx.moveTo(cx - 250, canvas.height);
-                ctx.quadraticCurveTo(cx - 180, by, cx - 60, by - 20);
-                ctx.lineTo(cx + 60, by - 20);
-                ctx.quadraticCurveTo(cx + 180, by, cx + 250, canvas.height);
-                ctx.fill();
-                
-                // Hoodie strings
-                ctx.strokeStyle = state.clothingColor2; ctx.lineWidth = 8; ctx.lineCap='round';
-                ctx.beginPath(); ctx.moveTo(cx - 30, by); ctx.lineTo(cx - 40, by + 80); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx + 30, by); ctx.lineTo(cx + 40, by + 90); ctx.stroke();
-            } 
-            // Sports Jersey (Seahawks/Custom style)
-            else if (state.clothingStyle === 4) {
-                ctx.fillStyle = state.clothingColor1;
-                ctx.beginPath(); ctx.moveTo(cx - 220, canvas.height); ctx.quadraticCurveTo(cx - 150, by-10, cx - 50, by - 20); ctx.lineTo(cx + 50, by - 20); ctx.quadraticCurveTo(cx + 150, by-10, cx + 220, canvas.height); ctx.fill();
-                
-                ctx.strokeStyle = state.clothingColor2; ctx.lineWidth = 20;
-                // V-Neck Trim
-                ctx.beginPath(); ctx.moveTo(cx - 50, by - 20); ctx.lineTo(cx, by + 40); ctx.lineTo(cx + 50, by - 20); ctx.stroke();
-                // Shoulder Stripes
-                ctx.beginPath(); ctx.moveTo(cx - 120, by + 10); ctx.lineTo(cx - 200, by + 80); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx + 120, by + 10); ctx.lineTo(cx + 200, by + 80); ctx.stroke();
-                
-                // Big Number
-                ctx.fillStyle = '#ffffff';
-                ctx.font = "900 120px Impact";
-                ctx.textAlign = "center";
-                ctx.fillText("12", cx, by + 180);
-                ctx.strokeStyle = state.clothingColor2; ctx.lineWidth = 4;
-                ctx.strokeText("12", cx, by + 180);
-            }
-            // Suit
-            else if (state.clothingStyle === 3) {
-                ctx.fillStyle = '#ffffff'; // Shirt
-                ctx.beginPath(); ctx.moveTo(cx - 50, by - 20); ctx.lineTo(cx + 50, by - 20); ctx.lineTo(cx, by + 150); ctx.fill();
-                
-                ctx.fillStyle = state.clothingColor2; // Tie
-                ctx.beginPath(); ctx.moveTo(cx - 15, by + 10); ctx.lineTo(cx + 15, by + 10); ctx.lineTo(cx + 10, by + 180); ctx.lineTo(cx, by + 200); ctx.lineTo(cx - 10, by + 180); ctx.fill();
-                
-                ctx.fillStyle = state.clothingColor1; // Jacket
-                ctx.beginPath(); ctx.moveTo(cx - 220, canvas.height); ctx.lineTo(cx - 150, by-20); ctx.lineTo(cx - 50, by-20); ctx.lineTo(cx, by + 120); ctx.lineTo(cx - 40, canvas.height); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(cx + 220, canvas.height); ctx.lineTo(cx + 150, by-20); ctx.lineTo(cx + 50, by-20); ctx.lineTo(cx, by + 120); ctx.lineTo(cx + 40, canvas.height); ctx.fill();
-            }
-            else { // V-Neck
-                ctx.fillStyle = state.clothingColor1;
-                ctx.beginPath(); ctx.moveTo(cx - 200, canvas.height); ctx.quadraticCurveTo(cx - 120, by, cx - 40, by); ctx.lineTo(cx + 40, by); ctx.quadraticCurveTo(cx + 120, by, cx + 200, canvas.height); ctx.fill();
-                ctx.fillStyle = state.skinTone;
-                ctx.beginPath(); ctx.moveTo(cx - 40, by); ctx.lineTo(cx + 40, by); ctx.lineTo(cx, by + 70); ctx.fill();
-            }
+            // Collar detail
+            ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(cx, cy+180); ctx.lineTo(cx, cy+250); ctx.stroke();
         }
 
-        function drawHeadBase() {
-            ctx.fillStyle = createSkinGradient(cx, cy-40, state.faceWidth + 30);
-            ctx.beginPath();
+        function drawHeadRealistic() {
+            const hexSkin = rgbToHex(state.skinTone);
+            ctx.save();
             
-            let jawY = cy + 100;
-            if (state.gender === 'masc') jawY = cy + 120;
-            if (state.gender === 'fem') jawY = cy + 85;
-
-            ctx.moveTo(cx, jawY);
-            ctx.bezierCurveTo(cx + state.faceWidth, jawY, cx + state.faceWidth + 15, cy - 100, cx, cy - 120);
-            ctx.bezierCurveTo(cx - state.faceWidth - 15, cy - 100, cx - state.faceWidth, jawY, cx, jawY);
-            ctx.fill();
-
-            // Ears
+            // Base head shape
             ctx.beginPath();
-            ctx.arc(cx - state.faceWidth - 5, cy, 22, 0, Math.PI*2);
-            ctx.arc(cx + state.faceWidth + 5, cy, 22, 0, Math.PI*2);
-            ctx.fill();
+            ctx.moveTo(cx, cy + 160); // Chin
+            ctx.bezierCurveTo(cx + 130, cy + 140, cx + 140, cy - 100, cx, cy - 140); // Right side
+            ctx.bezierCurveTo(cx - 140, cy - 100, cx - 130, cy + 140, cx, cy + 160); // Left side
+            ctx.clip(); // Clip all subsequent drawing to head shape
+
+            // 1. Base Skin Tone
+            ctx.fillStyle = state.skinTone;
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+
+            // 2. Soft Cheek Blush & contour
+            let blushGrad = ctx.createRadialGradient(cx - 70, cy + 30, 10, cx - 70, cy + 30, 60);
+            blushGrad.addColorStop(0, shade(hexSkin, -30)); // Darker/Redder center
+            blushGrad.addColorStop(1, 'transparent');
+            ctx.globalAlpha = 0.4; ctx.fillStyle = blushGrad; ctx.fillRect(0,0,canvas.width,canvas.height);
+            
+            blushGrad = ctx.createRadialGradient(cx + 70, cy + 30, 10, cx + 70, cy + 30, 60);
+            blushGrad.addColorStop(0, shade(hexSkin, -30));
+            blushGrad.addColorStop(1, 'transparent');
+            ctx.fillStyle = blushGrad; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+            // 3. Forehead/Nose Highlight
+            let highGrad = ctx.createRadialGradient(cx, cy - 50, 20, cx, cy, 120);
+            highGrad.addColorStop(0, shade(hexSkin, 40));
+            highGrad.addColorStop(1, 'transparent');
+            ctx.globalAlpha = 0.6; ctx.fillStyle = highGrad; ctx.fillRect(0,0,canvas.width,canvas.height);
+            
+            // 4. Jawline/Chin Shadow
+            let jawGrad = ctx.createLinearGradient(0, cy+100, 0, cy+160);
+            jawGrad.addColorStop(0, 'transparent');
+            jawGrad.addColorStop(1, shade(hexSkin, -50));
+            ctx.globalAlpha = 0.5; ctx.fillStyle = jawGrad; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+            ctx.restore();
         }
 
-        function drawEyes() {
-            const ex = 45; const ey = cy - 20;
-            
-            if (isBlinking) {
-                ctx.strokeStyle = shadeColor(state.skinTone, -30);
-                ctx.lineWidth = 4;
-                ctx.beginPath(); ctx.moveTo(cx - ex - 20, ey); ctx.lineTo(cx - ex + 20, ey); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx + ex - 20, ey); ctx.lineTo(cx + ex + 20, ey); ctx.stroke();
-                return; // skip drawing rest of eye
-            }
-
-            // Whites
-            ctx.fillStyle = '#ffffff';
+        function drawFeaturesRealistic() {
+            // Nose (Soft shadow)
+            ctx.fillStyle = shade(rgbToHex(state.skinTone), -30);
+            ctx.globalAlpha = 0.4;
             ctx.beginPath();
-            if (state.eyeStyle === 1 || state.eyeStyle === 4) { // Almond
-                ctx.ellipse(cx - ex, ey, 22, 14, 0, 0, Math.PI*2);
-                ctx.ellipse(cx + ex, ey, 22, 14, 0, 0, Math.PI*2);
-            } else if (state.eyeStyle === 2) { // Sharp
-                ctx.moveTo(cx - ex - 25, ey - 5); ctx.lineTo(cx - ex + 20, ey + 8); ctx.lineTo(cx - ex - 5, ey + 15);
-                ctx.moveTo(cx + ex + 25, ey - 5); ctx.lineTo(cx + ex - 20, ey + 8); ctx.lineTo(cx + ex + 5, ey + 15);
-            } else if (state.eyeStyle === 5) { // Wide
-                ctx.ellipse(cx - ex, ey, 25, 25, 0, 0, Math.PI*2);
-                ctx.ellipse(cx + ex, ey, 25, 25, 0, 0, Math.PI*2);
-            } else { // Sleepy
-                ctx.fillRect(cx - ex - 20, ey, 40, 10);
-                ctx.fillRect(cx + ex - 20, ey, 40, 10);
-            }
+            ctx.moveTo(cx - 10, cy + 40);
+            ctx.quadraticCurveTo(cx, cy + 50, cx + 10, cy + 40);
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+
+            // Mouth (Gradient lips)
+            let lipGrad = ctx.createLinearGradient(0, cy+80, 0, cy+100);
+            lipGrad.addColorStop(0, '#dba39a');
+            lipGrad.addColorStop(1, '#c48b82');
+            ctx.fillStyle = lipGrad;
+            ctx.beginPath(); // Upper lip
+            ctx.moveTo(cx - 30, cy + 85);
+            ctx.quadraticCurveTo(cx, cy + 75, cx + 30, cy + 85);
+            ctx.quadraticCurveTo(cx, cy + 90, cx - 30, cy + 85);
+            ctx.fill();
+            ctx.beginPath(); // Lower lip
+            ctx.moveTo(cx - 30, cy + 85);
+            ctx.quadraticCurveTo(cx, cy + 110, cx + 30, cy + 85);
             ctx.fill();
 
-            // Iris Gradients
-            let iGradL = ctx.createRadialGradient(cx-ex, ey+2, 2, cx-ex, ey+2, 12);
-            iGradL.addColorStop(0, '#fff'); iGradL.addColorStop(0.3, state.eyeColor); iGradL.addColorStop(1, '#000');
-            
-            let iGradR = ctx.createRadialGradient(cx+ex, ey+2, 2, cx+ex, ey+2, 12);
-            iGradR.addColorStop(0, '#fff'); iGradR.addColorStop(0.3, state.eyeColor); iGradR.addColorStop(1, '#000');
+            // Eyes
+            drawRealisticEye(cx - 55, cy - 10);
+            drawRealisticEye(cx + 55, cy - 10);
 
-            if(state.eyeStyle === 1 || state.eyeStyle === 4 || state.eyeStyle === 5) {
-                ctx.fillStyle = iGradL; ctx.beginPath(); ctx.arc(cx - ex, ey + 2, 12, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = iGradR; ctx.beginPath(); ctx.arc(cx + ex, ey + 2, 12, 0, Math.PI*2); ctx.fill();
-                
-                // Anime sparkle
-                if(state.eyeStyle === 4) {
-                    ctx.fillStyle='white';
-                    ctx.beginPath(); ctx.arc(cx - ex + 5, ey - 3, 5, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(cx + ex + 5, ey - 3, 5, 0, Math.PI*2); ctx.fill();
-                }
-            } else {
-                ctx.fillStyle = iGradL; ctx.beginPath(); ctx.arc(cx - ex, ey + 4, 8, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = iGradR; ctx.beginPath(); ctx.arc(cx + ex, ey + 4, 8, 0, Math.PI*2); ctx.fill();
-            }
-
-            // Eyebrows
-            ctx.strokeStyle = shadeColor(state.hairColor, -10);
+            // Brows
+            ctx.strokeStyle = shade(state.hairColor, -60);
             ctx.lineWidth = 8; ctx.lineCap = 'round';
-            ctx.beginPath(); ctx.moveTo(cx - ex - 25, ey - 20); ctx.quadraticCurveTo(cx - ex, ey - 30, cx - ex + 25, ey - 20); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(cx + ex - 25, ey - 20); ctx.quadraticCurveTo(cx + ex, ey - 30, cx + ex + 25, ey - 20); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx-90, cy-40); ctx.quadraticCurveTo(cx-55, cy-55, cx-20, cy-40); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx+90, cy-40); ctx.quadraticCurveTo(cx+55, cy-55, cx+20, cy-40); ctx.stroke();
         }
 
-        function drawNose() {
-            ctx.strokeStyle = shadeColor(state.skinTone, -25);
-            ctx.lineWidth = 4; ctx.lineCap = "round";
-            const ny = cy + 30;
+        function drawRealisticEye(x, y) {
+            // Sclera (White part with soft shadow)
+            ctx.fillStyle = '#fdfdfd';
+            ctx.beginPath(); ctx.ellipse(x, y, 28, 18, 0, 0, Math.PI*2); ctx.fill();
+            let eyeShadow = ctx.createRadialGradient(x, y-10, 10, x, y, 28);
+            eyeShadow.addColorStop(0, 'transparent'); eyeShadow.addColorStop(1, '#ddd');
+            ctx.fillStyle = eyeShadow; ctx.fill();
+
+            // Iris
+            let irisGrad = ctx.createRadialGradient(x, y, 5, x, y, 14);
+            irisGrad.addColorStop(0, shade(state.eyeColor, 30));
+            irisGrad.addColorStop(0.8, state.eyeColor);
+            irisGrad.addColorStop(1, shade(state.eyeColor, -40));
+            ctx.fillStyle = irisGrad;
+            ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI*2); ctx.fill();
+
+            // Pupil
+            ctx.fillStyle = '#1a1a1a';
+            ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI*2); ctx.fill();
+
+            // Catchlight (Reflection)
+            ctx.fillStyle = '#ffffff';
+            ctx.globalAlpha = 0.8;
+            ctx.beginPath(); ctx.ellipse(x - 5, y - 5, 4, 3, Math.PI/4, 0, Math.PI*2); ctx.fill();
+            ctx.globalAlpha = 1.0;
+        }
+
+        // --- HAIR STRAND SYSTEM ---
+        function drawHairStrand(x1, y1, c1x, c1y, c2x, c2y, x2, y2, color, width) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.lineCap = 'round';
             ctx.beginPath();
-            if(state.noseStyle === 1) { ctx.arc(cx, ny, 12, Math.PI, 0, true); } // Button
-            else if(state.noseStyle === 2) { ctx.moveTo(cx, cy-10); ctx.lineTo(cx - 15, ny); ctx.lineTo(cx, ny+5); } // Angular
-            else if(state.noseStyle === 3) { ctx.moveTo(cx-18, ny); ctx.quadraticCurveTo(cx, ny+15, cx+18, ny); } // Wide
+            ctx.moveTo(x1, y1);
+            ctx.bezierCurveTo(c1x, c1y, c2x, c2y, x2, y2);
             ctx.stroke();
         }
 
-        function drawMouth() {
-            ctx.strokeStyle = shadeColor(state.skinTone, -50);
-            ctx.lineWidth = 5; ctx.lineCap = 'round';
-            const my = cy + 75;
-            ctx.beginPath();
-
-            if (state.mouthStyle === 1) { // Smirk
-                ctx.moveTo(cx - 25, my); ctx.quadraticCurveTo(cx, my + 15, cx + 30, my - 20); ctx.stroke();
-            } else if (state.mouthStyle === 2) { // Neutral
-                ctx.moveTo(cx - 25, my); ctx.lineTo(cx + 25, my); ctx.stroke();
-            } else if (state.mouthStyle === 3) { // Grin
-                ctx.fillStyle = '#ffffff';
-                ctx.moveTo(cx - 30, my - 5); ctx.quadraticCurveTo(cx, my + 30, cx + 30, my - 5); ctx.fill(); ctx.stroke();
-            } else if (state.mouthStyle === 4) { // Shocked
-                ctx.fillStyle = '#222';
-                ctx.ellipse(cx, my + 10, 15, 25, 0, 0, Math.PI*2); ctx.fill();
-            } else { // Frown
-                ctx.arc(cx, my + 20, 30, Math.PI + 0.3, Math.PI*2 - 0.3, false); ctx.stroke();
-            }
-        }
-
-        // --- HAIR & HEADWEAR RENDERING ---
-        function getHairGradiant(yStart, yEnd) {
-            let grad = ctx.createLinearGradient(0, yStart, 0, yEnd);
-            grad.addColorStop(0, shadeColor(state.hairColor, 30)); // Shine
-            grad.addColorStop(0.5, state.hairColor);
-            grad.addColorStop(1, shadeColor(state.hairColor, -30)); // Shadow
-            return grad;
-        }
-
         function drawHairBack() {
-            if (state.hairStyle === 3) { // Long Waves
-                ctx.fillStyle = getHairGradiant(cy - 100, cy + 200);
-                ctx.beginPath();
-                ctx.moveTo(cx - 80, cy - 100);
-                ctx.bezierCurveTo(cx - 200, cy + 50, cx - 120, cy + 250, cx - 180, cy + 300);
-                ctx.lineTo(cx + 180, cy + 300);
-                ctx.bezierCurveTo(cx + 120, cy + 250, cx + 200, cy + 50, cx + 80, cy - 100);
-                ctx.fill();
-            }
-        }
-
-        function drawHairFront() {
-            ctx.fillStyle = getHairGradiant(cy - 150, cy - 50);
+            const base = state.hairColor;
+            const dark = shade(base, -50);
             
-            if (state.hairStyle === 1 || state.hairStyle === 4) { // Fade / Bun base
-                ctx.beginPath(); ctx.arc(cx, cy - 100, 105, Math.PI, 0, false); ctx.fill();
-                if(state.hairStyle === 4) { // Add Bun
-                    ctx.beginPath(); ctx.arc(cx, cy - 180, 60, 0, Math.PI*2); ctx.fill();
-                }
-            } else if (state.hairStyle === 2) { // Anime
-                ctx.beginPath();
-                ctx.moveTo(cx - 105, cy - 60); ctx.lineTo(cx - 80, cy - 180); ctx.lineTo(cx - 40, cy - 120);
-                ctx.lineTo(cx - 10, cy - 220); ctx.lineTo(cx + 30, cy - 120); ctx.lineTo(cx + 80, cy - 190);
-                ctx.lineTo(cx + 105, cy - 60); ctx.fill();
-            } else if (state.hairStyle === 5) { // Undercut
-                ctx.fillStyle = shadeColor(state.hairColor, 40); // Sides
-                ctx.beginPath(); ctx.arc(cx, cy - 90, 100, Math.PI, 0, false); ctx.fill();
-                ctx.fillStyle = getHairGradiant(cy-180, cy-80); // Top flop
-                ctx.beginPath(); ctx.moveTo(cx - 60, cy - 130); ctx.quadraticCurveTo(cx - 120, cy - 70, cx - 130, cy - 40); ctx.quadraticCurveTo(cx, cy - 220, cx + 80, cy - 140); ctx.fill();
-            } else if (state.hairStyle === 3) { // Flowing bangs
-                ctx.beginPath(); ctx.moveTo(cx, cy - 120); ctx.quadraticCurveTo(cx - 100, cy - 120, cx - 120, cy+20); ctx.lineTo(cx - 80, cy - 120); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(cx, cy - 120); ctx.quadraticCurveTo(cx + 100, cy - 120, cx + 120, cy+20); ctx.lineTo(cx + 80, cy - 120); ctx.fill();
+            // Mass of hair behind head
+            for(let i=0; i<150; i++) {
+                let x = cx - 180 + Math.random()*360;
+                let y = cy + Math.random()*300;
+                let width = 10 + Math.random()*20;
+                let color = Math.random() > 0.5 ? base : dark;
+                ctx.globalAlpha = 0.8;
+                drawHairStrand(cx, cy-100, x-50, cy+50, x+50, cy+150, x, y, color, width);
+            }
+            ctx.globalAlpha = 1.0;
+        }
+
+        function drawHairFrontRealistic() {
+            const base = state.hairColor;
+            const light = shade(base, 50);
+            const dark = shade(base, -30);
+
+            // Main bangs/shape
+            ctx.fillStyle = base;
+            ctx.beginPath();
+            ctx.moveTo(cx - 140, cy - 50); // Left start
+            ctx.quadraticCurveTo(cx - 150, cy - 200, cx, cy - 220); // Top arch
+            ctx.quadraticCurveTo(cx + 150, cy - 200, cx + 140, cy - 50); // Right side
+            // Framing face
+            ctx.bezierCurveTo(cx + 100, cy + 100, cx + 80, cy + 250, cx + 100, cy + 300); // Right fall
+            ctx.lineTo(cx - 100, cy + 300); // Bottom
+            ctx.bezierCurveTo(cx - 80, cy + 250, cx - 100, cy + 100, cx - 140, cy - 50); // Left fall
+            ctx.fill();
+
+            // Individual Strands for texture & highlights
+            // Crown/Top
+            for(let i=0; i<50; i++) {
+                let startX = cx - 80 + Math.random()*160;
+                let endX = startX + (Math.random()-0.5)*100;
+                let color = Math.random() > 0.7 ? light : (Math.random() > 0.7 ? dark : base);
+                drawHairStrand(startX, cy-180, startX, cy-220, endX, cy-100, endX, cy-50, color, 3+Math.random()*4);
+            }
+            // Left side flow
+            for(let i=0; i<40; i++) {
+                 let color = Math.random() > 0.6 ? light : base;
+                 drawHairStrand(cx-100, cy-100, cx-180, cy, cx-120, cy+150, cx-150+Math.random()*40, cy+280, color, 4+Math.random()*5);
+            }
+             // Right side flow
+             for(let i=0; i<40; i++) {
+                 let color = Math.random() > 0.6 ? light : base;
+                 drawHairStrand(cx+100, cy-100, cx+180, cy, cx+120, cy+150, cx+150-Math.random()*40, cy+280, color, 4+Math.random()*5);
             }
         }
 
-        function drawHeadwear() {
-            if(state.headwear === 1) { // Cap
-                ctx.fillStyle = state.hairColor; // Map to hair color picker for ease
-                ctx.beginPath(); ctx.arc(cx, cy - 100, 105, Math.PI, 0, false); ctx.fill();
-                ctx.fillStyle = shadeColor(state.hairColor, -20);
-                ctx.beginPath(); ctx.moveTo(cx - 110, cy - 80); ctx.quadraticCurveTo(cx, cy - 120, cx + 150, cy - 70); ctx.quadraticCurveTo(cx + 150, cy - 50, cx - 110, cy - 70); ctx.fill();
-            } else if (state.headwear === 2) { // Beanie
-                ctx.fillStyle = state.hairColor;
-                ctx.beginPath(); ctx.arc(cx, cy - 90, 105, Math.PI, 0, false); ctx.fill();
-                ctx.fillStyle = shadeColor(state.hairColor, 15);
-                ctx.fillRect(cx - 110, cy - 100, 220, 40); // Fold
-            } else if (state.headwear === 3) { // Traditional Turban / Joora Wrap
-                let tGrad = ctx.createLinearGradient(cx-100, cy-200, cx+100, cy-50);
-                tGrad.addColorStop(0, shadeColor(state.hairColor, 20));
-                tGrad.addColorStop(1, shadeColor(state.hairColor, -30));
-                ctx.fillStyle = tGrad;
-                
-                // Massive Wrap Geometry
-                ctx.beginPath();
-                ctx.moveTo(cx - 120, cy - 70);
-                ctx.bezierCurveTo(cx - 140, cy - 200, cx, cy - 240, cx, cy - 240);
-                ctx.bezierCurveTo(cx, cy - 240, cx + 140, cy - 200, cx + 120, cy - 70);
-                ctx.bezierCurveTo(cx + 80, cy - 40, cx - 80, cy - 40, cx - 120, cy - 70);
-                ctx.fill();
-
-                // Detailed Fabric Folds
-                ctx.strokeStyle = shadeColor(state.hairColor, -40);
-                ctx.lineWidth = 6; ctx.lineCap='round';
-                
-                // V Folds
-                ctx.beginPath(); ctx.moveTo(cx, cy - 50); ctx.lineTo(cx - 90, cy - 160); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx, cy - 50); ctx.lineTo(cx + 90, cy - 160); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx, cy - 80); ctx.lineTo(cx - 110, cy - 130); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx, cy - 80); ctx.lineTo(cx + 110, cy - 130); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx, cy - 110); ctx.lineTo(cx - 80, cy - 210); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx, cy - 110); ctx.lineTo(cx + 80, cy - 210); ctx.stroke();
-            }
-        }
-
-        function drawFacialHairBase() {
-            if (state.facialHair === 1) { // Stubble
-                ctx.fillStyle = shadeColor(state.skinTone, -40);
-                ctx.globalAlpha = 0.5;
-                for(let i=0; i<300; i++) {
-                    let rx = cx - 80 + Math.random() * 160;
-                    let ry = cy + 50 + Math.random() * 70;
-                    if (Math.pow(rx - cx, 2) + Math.pow(ry - (cy+60), 2) < 7000) {
-                        ctx.fillRect(rx, ry, 2, 2);
-                    }
-                }
-                ctx.globalAlpha = 1.0;
-            } else if (state.facialHair === 3) { // Beard Base
-                ctx.fillStyle = getHairGradiant(cy+20, cy+180);
-                ctx.beginPath();
-                ctx.moveTo(cx - state.faceWidth + 5, cy + 30);
-                ctx.quadraticCurveTo(cx - state.faceWidth - 20, cy + 180, cx, cy + 220);
-                ctx.quadraticCurveTo(cx + state.faceWidth + 20, cy + 180, cx + state.faceWidth - 5, cy + 30);
-                ctx.fill();
-            }
-        }
-
-        function drawFacialHairFront() {
-            if (state.facialHair === 2 || state.facialHair === 3) { // Goatee/Stache
-                ctx.fillStyle = state.hairColor;
-                ctx.beginPath(); ctx.arc(cx, cy + 60, 35, Math.PI, 0, false); ctx.fill();
-                if(state.facialHair === 2) ctx.fillRect(cx - 25, cy + 90, 50, 25);
-            }
-        }
-
-        function drawGlasses() {
-            if (state.glasses === 0) return;
-            ctx.strokeStyle = '#222'; ctx.lineWidth = 8;
-            const gy = cy - 20;
-
-            if (state.glasses === 1) { // Round
-                ctx.beginPath(); ctx.arc(cx - 45, gy, 35, 0, Math.PI*2); ctx.stroke();
-                ctx.beginPath(); ctx.arc(cx + 45, gy, 35, 0, Math.PI*2); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx - 10, gy); ctx.lineTo(cx + 10, gy); ctx.stroke();
-            } else if (state.glasses === 2) { // Cyber
-                ctx.fillStyle = 'rgba(0, 255, 204, 0.8)';
-                ctx.beginPath(); ctx.moveTo(cx - 100, gy - 25); ctx.lineTo(cx + 100, gy - 25); ctx.lineTo(cx + 70, gy + 25); ctx.lineTo(cx - 70, gy + 25); ctx.fill(); ctx.stroke();
-                // LED Line
-                ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
-                ctx.beginPath(); ctx.moveTo(cx - 90, gy - 15); ctx.lineTo(cx + 90, gy - 15); ctx.stroke();
-            } else if (state.glasses === 3) { // Aviators
-                let gGrad = ctx.createLinearGradient(0, gy-30, 0, gy+30);
-                gGrad.addColorStop(0, '#111'); gGrad.addColorStop(1, '#444');
-                ctx.fillStyle = gGrad;
-                ctx.beginPath(); ctx.moveTo(cx - 90, gy - 25); ctx.quadraticCurveTo(cx - 45, gy - 35, cx - 10, gy - 20); ctx.quadraticCurveTo(cx - 45, gy + 45, cx - 90, gy - 25); ctx.fill(); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx + 90, gy - 25); ctx.quadraticCurveTo(cx + 45, gy - 35, cx + 10, gy - 20); ctx.quadraticCurveTo(cx + 45, gy + 45, cx + 90, gy - 25); ctx.fill(); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx - 10, gy - 20); ctx.lineTo(cx + 10, gy - 20); ctx.stroke(); // Bridge
-            }
-        }
-
-        // --- 9. CAMERA & AUTO-GEN LOGIC ---
-        const video = document.getElementById('video-feed');
-        const startCamBtn = document.getElementById('btn-start-cam');
-        const snapBtn = document.getElementById('btn-snap');
-        const camStatus = document.getElementById('cam-status');
-        const flash = document.getElementById('flash-fx');
-        let stream = null;
-
-        startCamBtn.addEventListener('click', async () => {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { width: 240, height: 180 } });
-                video.srcObject = stream;
-                video.style.display = 'block';
-                startCamBtn.style.display = 'none';
-                snapBtn.style.display = 'block';
-                camStatus.innerText = "Camera Active. Align face and Extract.";
-                camStatus.style.color = "var(--accent)";
-            } catch (err) {
-                camStatus.innerText = "ACCESS DENIED. You MUST host this on GitHub Pages (https) for the camera to work.";
-                camStatus.style.color = "#ff3333";
-            }
-        });
-
-        snapBtn.addEventListener('click', () => {
-            if (!stream) return;
-            
-            // Flash FX
-            flash.style.animation = 'none';
-            flash.offsetHeight; 
-            flash.style.animation = 'flash-bang 0.8s ease-out';
-
-            // Extract pixels
-            const hCanvas = document.createElement('canvas');
-            hCanvas.width = video.videoWidth; hCanvas.height = video.videoHeight;
-            const hctx = hCanvas.getContext('2d');
-            hctx.drawImage(video, 0, 0, hCanvas.width, hCanvas.height);
-            
-            // Guess Skin
-            const pd = hctx.getImageData(hCanvas.width/2, hCanvas.height/2 + 20, 1, 1).data;
-            const hexSkin = "#" + ((1 << 24) + (pd[0] << 16) + (pd[1] << 8) + pd[2]).toString(16).slice(1);
-            
-            // Apply DNA
-            state.skinTone = hexSkin;
-            document.getElementById('skinTone').value = hexSkin;
-            state.hairStyle = Math.floor(Math.random() * 6);
-            state.eyeStyle = Math.floor(Math.random() * 5) + 1;
-            state.mouthStyle = Math.floor(Math.random() * 5) + 1;
-            state.facialHair = Math.floor(Math.random() * 4);
-            state.headwear = Math.random() > 0.8 ? Math.floor(Math.random() * 3) + 1 : 0; // 20% chance of hat
-            
-            // Sync UI
-            Object.keys(state).forEach(k => {
-                const el = document.getElementById(k);
-                if(el) el.value = state[k];
-            });
-        });
-
-        // --- 10. EXPORT LOGIC ---
-        document.getElementById('btn-export').addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.download = 'Animated_Avatar_Pro.png';
-            link.href = canvas.toDataURL('image/png', 1.0);
-            link.click();
-        });
-
-        // Kickoff Render Loop
-        requestAnimationFrame(renderLoop);
     </script>
 </body>
 </html>
