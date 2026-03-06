@@ -3,146 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Engine v6.0: Manual Bypass Edition</title>
+    <title>ULTRA-MATRIX NEURAL ENGINE v7.0</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 
     <style>
         :root {
-            --bg-void: #010409;
-            --action-green: #69BE28; 
-            --navy-blue: #002244;  
-            --alert-red: #ff3333;
-            --panel: rgba(13, 17, 23, 0.9);
+            --bg-void: #00050b;
+            --hud-color: #69BE28; /* Action Green */
+            --trim-color: #002244; /* College Navy */
+            --danger: #ff0055;
+            --panel-bg: rgba(0, 10, 20, 0.7);
         }
 
         body {
             margin: 0; overflow: hidden; background-color: var(--bg-void);
-            color: #c9d1d9; font-family: 'Courier New', monospace; user-select: none;
+            color: var(--hud-color); font-family: 'Consolas', 'Courier New', monospace;
+            user-select: none;
         }
 
         #webgl-canvas { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
 
-        /* --- UI OVERLAYS --- */
-        .hud-border {
-            position: absolute; border: 1px solid var(--action-green);
-            background: var(--panel); backdrop-filter: blur(10px);
-            z-index: 10; padding: 20px; box-shadow: 0 0 20px rgba(105, 190, 40, 0.2);
-            border-radius: 8px;
-        }
-
-        #sys-header {
-            top: 20px; left: 20px; width: 350px;
-            border-left: 4px solid var(--action-green);
-        }
-        #sys-header h1 { margin: 0 0 10px 0; font-size: 1.2rem; letter-spacing: 2px; color: var(--action-green); }
-
-        .status-box {
-            background: #000; border: 1px solid #30363d; padding: 10px;
-            font-size: 0.85rem; margin-bottom: 10px; color: #8b949e;
-        }
-        .status-val { font-weight: bold; float: right; }
-
-        /* Hardware Feed */
+        /* PIP Camera Feed */
         #video-feed {
-            position: absolute; bottom: 20px; left: 20px; width: 240px;
-            border: 2px solid var(--action-green); border-radius: 4px;
-            z-index: 10; filter: contrast(120%) saturate(50%);
-            transform: scaleX(-1); display: none;
+            position: absolute; bottom: 30px; left: 30px; width: 320px;
+            border: 2px solid var(--hud-color); border-radius: 4px;
+            z-index: 10; filter: grayscale(100%) contrast(150%);
+            transform: scaleX(-1); box-shadow: 0 0 30px rgba(105, 190, 40, 0.3);
         }
 
-        /* Customization Controls */
-        #controls { top: 20px; right: 20px; width: 320px; border-right: 4px solid var(--action-green); }
-        
-        .control-group { margin-bottom: 15px; }
-        .lbl { font-size: 0.75rem; color: var(--action-green); font-weight: bold; margin-bottom: 5px; display: block; }
-        
-        input[type="range"] {
-            width: 100%; accent-color: var(--action-green); margin-bottom: 5px;
+        /* Cyber UI Overlay */
+        .hud-panel {
+            position: absolute; background: var(--panel-bg);
+            border: 1px solid var(--hud-color); backdrop-filter: blur(8px);
+            z-index: 10; padding: 20px; box-shadow: inset 0 0 20px rgba(0, 34, 68, 0.8);
         }
-        select {
-            width: 100%; padding: 10px; background: #000; color: #fff;
-            border: 1px solid #30363d; border-radius: 4px; font-family: inherit;
+
+        #telemetry { top: 30px; right: 30px; width: 350px; border-top: 4px solid var(--hud-color); }
+        
+        h1 { margin: 0 0 15px 0; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--hud-color); }
+        
+        .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #004488; font-size: 0.9rem; }
+        .data-label { color: #88bbff; }
+        .data-val { font-weight: bold; text-shadow: 0 0 8px var(--hud-color); }
+        
+        .alert { color: var(--danger); text-shadow: 0 0 10px var(--danger); animation: flash 0.5s infinite; }
+        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* Scanline Overlay */
+        .scanlines {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            z-index: 5; pointer-events: none;
         }
 
         #loading {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-void); z-index: 999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--bg-void); z-index: 999; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
         }
-        .spinner { width: 60px; height: 60px; border: 3px solid var(--navy-blue); border-top-color: var(--action-green); border-radius: 50%; animation: spin 1s linear infinite; }
+        .spinner {
+            width: 80px; height: 80px; border: 4px solid transparent;
+            border-top-color: var(--hud-color); border-bottom-color: var(--trim-color);
+            border-radius: 50%; animation: spin 1s linear infinite;
+        }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        #error-banner {
-            position: absolute; top: 0; left: 0; width: 100%; background: var(--alert-red);
-            color: #fff; text-align: center; padding: 10px; font-weight: bold;
-            z-index: 1000; display: none; text-transform: uppercase; letter-spacing: 2px;
-        }
     </style>
 </head>
 <body>
 
-    <div id="error-banner">WEBCAM BLOCKED BY BROWSER SECURITY. INITIALIZING MANUAL SIMULATION OVERRIDE.</div>
-
     <div id="loading">
         <div class="spinner"></div>
-        <h2 style="color: var(--action-green); margin-top: 20px;">CONNECTING TO AI MATRIX</h2>
-        <p style="color: #8b949e;">Requesting Camera Access...</p>
+        <h2 style="margin-top: 30px; letter-spacing: 5px; text-shadow: 0 0 15px var(--hud-color);">COMPILING ML SHADERS</h2>
+        <p style="color: #88bbff;">Awaiting Localhost Camera Handshake...</p>
     </div>
 
     <canvas id="webgl-canvas"></canvas>
+    <div class="scanlines"></div>
     <video id="video-feed" autoplay playsinline></video>
 
-    <div class="hud-border" id="sys-header">
-        <h1>NEURAL ENGINE v6.0</h1>
-        <div class="status-box">
-            SYSTEM STATE: <span class="status-val" id="sys-status" style="color: #ff9900;">BOOTING</span>
-        </div>
-        <div class="status-box">
-            NODE COUNT: <span class="status-val" id="node-count">0 / 478</span>
-        </div>
-        <div class="status-box" style="font-size: 0.7rem; line-height: 1.4;">
-            If the AI tracking fails due to file:// security restrictions, the engine will automatically drop into SIMULATION MODE, unlocking manual sliders.
-        </div>
-    </div>
-
-    <div class="hud-border" id="controls">
-        <h2 style="margin: 0 0 15px 0; color: #fff; font-size: 1rem; border-bottom: 1px solid #30363d; padding-bottom: 10px;">RIG CALIBRATION</h2>
-        
-        <div class="control-group">
-            <span class="lbl">EQUIP 3D ASSETS</span>
-            <select id="asset-select">
-                <option value="patka">Cyber Joora / Patka</option>
-                <option value="none">Raw Skeletal Geometry</option>
-            </select>
-        </div>
-
-        <div id="sim-controls" style="opacity: 0.5; pointer-events: none; border-top: 1px dashed #30363d; padding-top: 15px; margin-top: 15px;">
-            <span class="lbl" style="color: #8b949e; text-align: center; margin-bottom: 15px;">MANUAL OVERRIDE LOCKED (AI ACTIVE)</span>
-            
-            <div class="control-group">
-                <span class="lbl">MANUAL PITCH (X-AXIS)</span>
-                <input type="range" id="sim-pitch" min="-1.5" max="1.5" step="0.1" value="0">
-            </div>
-            <div class="control-group">
-                <span class="lbl">MANUAL YAW (Y-AXIS)</span>
-                <input type="range" id="sim-yaw" min="-1.5" max="1.5" step="0.1" value="0">
-            </div>
-            <div class="control-group">
-                <span class="lbl">TONGUE DEPLOYMENT</span>
-                <input type="range" id="sim-tongue" min="0" max="2" step="0.1" value="0">
-            </div>
-        </div>
+    <div class="hud-panel" id="telemetry">
+        <h1>BIOMETRIC UPLINK</h1>
+        <div class="data-row"><span class="data-label">SYS_STATE:</span><span class="data-val" id="sys-state" style="color: #ffaa00;">AWAITING FEED</span></div>
+        <div class="data-row"><span class="data-label">NODES_TRACKED:</span><span class="data-val" id="nodes-tracked">0 / 478</span></div>
+        <div class="data-row"><span class="data-label">PITCH_AXIS (X):</span><span class="data-val" id="val-pitch">0.00°</span></div>
+        <div class="data-row"><span class="data-label">YAW_AXIS (Y):</span><span class="data-val" id="val-yaw">0.00°</span></div>
+        <div class="data-row"><span class="data-label">ROLL_AXIS (Z):</span><span class="data-val" id="val-roll">0.00°</span></div>
+        <div class="data-row"><span class="data-label">MOUTH_APERTURE:</span><span class="data-val" id="val-mouth">0.00 mm</span></div>
+        <div class="data-row"><span class="data-label">OCULAR_STATUS:</span><span class="data-val" id="val-eyes">OPEN</span></div>
+        <div style="margin-top: 15px; text-align: center; font-weight: bold; display: none;" id="tongue-alert" class="alert">ACTION: TONGUE DEPLOYED</div>
     </div>
 
     <script>
         // ==========================================
-        // 1. CUSTOM GLSL SHADERS (High-End Graphics)
+        // 1. ADVANCED THREE.JS + BLOOM COMPOSER
+        // ==========================================
+        const canvas = document.getElementById('webgl-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x00050b, 0.0007);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
+        camera.position.set(0, 50, 900);
+
+        // Lights
+        scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+        const dirLight = new THREE.DirectionalLight(0x69BE28, 2.0);
+        dirLight.position.set(200, 500, 300);
+        scene.add(dirLight);
+        const backLight = new THREE.DirectionalLight(0x002244, 3.0);
+        backLight.position.set(-200, -200, -300);
+        scene.add(backLight);
+
+        // --- POST PROCESSING (Unreal Bloom) ---
+        const renderScene = new THREE.RenderPass(scene, camera);
+        // Resolution, strength, radius, threshold
+        const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.8, 0.4, 0.1);
+        
+        const composer = new THREE.EffectComposer(renderer);
+        composer.addPass(renderScene);
+        composer.addPass(bloomPass);
+
+        // Cyber Grid Floor
+        const grid = new THREE.GridHelper(4000, 80, 0x002244, 0x001122);
+        grid.position.y = -400;
+        scene.add(grid);
+
+        // ==========================================
+        // 2. PROCEDURAL GLSL SHADERS
         // ==========================================
         const holoVert = `
-            varying vec3 vNormal;
-            varying vec3 vViewPosition;
+            varying vec3 vNormal; varying vec3 vViewPosition;
             void main() {
                 vNormal = normalize(normalMatrix * normal);
                 vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
@@ -150,264 +155,187 @@
                 gl_Position = projectionMatrix * mvPosition;
             }
         `;
-        
         const holoFrag = `
-            uniform vec3 color;
-            uniform float time;
-            varying vec3 vNormal;
-            varying vec3 vViewPosition;
+            uniform vec3 color; uniform float time;
+            varying vec3 vNormal; varying vec3 vViewPosition;
             void main() {
-                vec3 normal = normalize(vNormal);
-                vec3 viewDir = normalize(vViewPosition);
-                
-                // Fresnel Glow effect
+                vec3 normal = normalize(vNormal); vec3 viewDir = normalize(vViewPosition);
                 float fresnel = dot(normal, viewDir);
                 fresnel = clamp(1.0 - fresnel, 0.0, 1.0);
-                fresnel = pow(fresnel, 3.0);
-                
-                // Animated digital scanlines
-                float scanline = sin(gl_FragCoord.y * 0.2 + time * 5.0) * 0.1;
-                
-                gl_FragColor = vec4(color * (fresnel + 0.3) + scanline, 0.85);
+                fresnel = pow(fresnel, 2.5);
+                float scanline = sin(gl_FragCoord.y * 0.3 + time * 8.0) * 0.1;
+                gl_FragColor = vec4(color * (fresnel + 0.4) + scanline, 0.9);
             }
         `;
 
-        const uniforms = {
-            color: { value: new THREE.Color(0x69BE28) }, // Action Green
-            time: { value: 0.0 }
-        };
-
-        const customHoloMaterial = new THREE.ShaderMaterial({
+        const uniforms = { color: { value: new THREE.Color(0x002244) }, time: { value: 0.0 } }; // Navy Shader
+        const cyberMat = new THREE.ShaderMaterial({
             uniforms: uniforms, vertexShader: holoVert, fragmentShader: holoFrag,
             transparent: true, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false
         });
 
         // ==========================================
-        // 2. THREE.JS SCENE SETUP
+        // 3. THE 956-NODE ARCHITECTURE (Nodes + Body)
         // ==========================================
-        const canvas = document.getElementById('webgl-canvas');
-        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        const agentRig = new THREE.Group();
+        scene.add(agentRig);
 
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x010409, 0.0008);
-
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
-        camera.position.set(0, 50, 800);
-
-        // Cyber Grid Floor
-        const gridFloor = new THREE.GridHelper(3000, 80, 0x002244, 0x010409); // Navy Grid
-        gridFloor.position.y = -400;
-        scene.add(gridFloor);
-
-        // ==========================================
-        // 3. THE 3D CYBER-AGENT RIG
-        // ==========================================
-        const agentGroup = new THREE.Group();
-        scene.add(agentGroup);
-
-        // 478-Node Array
+        // A. 478 Glowing Face Nodes
         const nodeGeo = new THREE.BufferGeometry();
         const nodePositions = new Float32Array(478 * 3);
         nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3));
-        const nodeMat = new THREE.PointsMaterial({ color: 0x69BE28, size: 4, transparent: true, opacity: 0.9 });
-        const nodes = new THREE.Points(nodeGeo, nodeMat);
-        agentGroup.add(nodes);
+        const nodeMat = new THREE.PointsMaterial({ color: 0x69BE28, size: 5, transparent: true, opacity: 1.0, blending: THREE.AdditiveBlending });
+        const faceNodes = new THREE.Points(nodeGeo, nodeMat);
+        agentRig.add(faceNodes);
 
-        // Skeletal Structure (Using Custom Shader)
+        // B. Cyber-Skeleton
         const skeleton = new THREE.Group();
-        agentGroup.add(skeleton);
+        agentRig.add(skeleton);
 
-        const neckGeo = new THREE.CylinderGeometry(40, 50, 120, 16);
-        const neck = new THREE.Mesh(neckGeo, customHoloMaterial);
+        const neckGeo = new THREE.CylinderGeometry(40, 50, 140, 16);
+        const neck = new THREE.Mesh(neckGeo, cyberMat);
         skeleton.add(neck);
 
-        const torsoGeo = new THREE.BoxGeometry(300, 200, 80);
-        const torso = new THREE.Mesh(torsoGeo, customHoloMaterial);
+        const torsoGeo = new THREE.BoxGeometry(320, 240, 100);
+        const torso = new THREE.Mesh(torsoGeo, cyberMat);
+        const torsoTrim = new THREE.LineSegments(new THREE.EdgesGeometry(torsoGeo), new THREE.LineBasicMaterial({ color: 0x69BE28, linewidth: 2 }));
+        torso.add(torsoTrim);
         skeleton.add(torso);
 
-        // Tongue Mesh
-        const tongueGeo = new THREE.CapsuleGeometry(15, 40, 4, 16);
-        const tongueMat = new THREE.MeshBasicMaterial({ color: 0xff3333, wireframe: true });
+        // C. Deployable Tongue
+        const tongueGeo = new THREE.CapsuleGeometry(16, 45, 4, 32);
+        const tongueMat = new THREE.MeshStandardMaterial({ color: 0xff0055, roughness: 0.2, emissive: 0x440011 });
         const tongue = new THREE.Mesh(tongueGeo, tongueMat);
         tongue.rotation.x = Math.PI / 2;
-        tongue.scale.set(0.01, 0.01, 0.01);
-        agentGroup.add(tongue);
+        tongue.scale.set(0.01, 0.01, 0.01); // Hidden
+        agentRig.add(tongue);
 
-        // Cyber Patka Rig
-        const hatAnchor = new THREE.Group();
-        agentGroup.add(hatAnchor);
+        // D. High-Poly Joora / Patka Anchor
+        const headwear = new THREE.Group();
+        agentRig.add(headwear);
 
         const domeGeo = new THREE.SphereGeometry(95, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.55);
-        const dome = new THREE.Mesh(domeGeo, customHoloMaterial);
+        const dome = new THREE.Mesh(domeGeo, cyberMat);
         dome.rotation.x = -0.2;
         
-        const knotGeo = new THREE.TorusGeometry(28, 16, 16, 32);
-        const knot = new THREE.Mesh(knotGeo, customHoloMaterial);
-        knot.position.set(0, 85, -20); knot.rotation.x = Math.PI / 2;
+        const knotGeo = new THREE.TorusGeometry(30, 16, 16, 32);
+        const knot = new THREE.Mesh(knotGeo, cyberMat);
+        knot.position.set(0, 90, -20); knot.rotation.x = Math.PI / 2;
         
-        hatAnchor.add(dome); hatAnchor.add(knot);
+        headwear.add(dome); headwear.add(knot);
 
         // ==========================================
-        // 4. FAILSAFE / MANUAL SIMULATION ENGINE
-        // ==========================================
-        let simulationMode = false;
-        let simNodes = [];
-
-        // Pre-calculate a mathematical sphere to represent a face if AI fails
-        for(let i=0; i<478; i++) {
-            const phi = Math.acos( -1 + ( 2 * i ) / 478 );
-            const theta = Math.sqrt( 478 * Math.PI ) * phi;
-            simNodes.push({
-                x: (Math.cos(theta) * Math.sin(phi) * 0.4) + 0.5,
-                y: (Math.cos(phi) * 0.5) + 0.5,
-                z: (Math.sin(theta) * Math.sin(phi) * 0.4)
-            });
-        }
-
-        function enableSimulationMode() {
-            simulationMode = true;
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('error-banner').style.display = 'block';
-            document.getElementById('sys-status').innerText = "SIMULATION ACTIVE";
-            document.getElementById('sys-status').style.color = var(--action-green);
-            document.getElementById('node-count').innerText = "SYNTHETIC MESH";
-            
-            // Unlock UI Sliders
-            const simControls = document.getElementById('sim-controls');
-            simControls.style.opacity = '1';
-            simControls.style.pointerEvents = 'auto';
-            simControls.querySelector('.lbl').innerText = "MANUAL OVERRIDE UNLOCKED";
-            simControls.querySelector('.lbl').style.color = "#69BE28";
-        }
-
-        // ==========================================
-        // 5. THE HYBRID UPDATE LOOP
+        // 4. ML TRACKING LOGIC & LERPING
         // ==========================================
         let smoothedPos = new Float32Array(478 * 3);
+        let smoothedMouth = 0;
 
-        function updateRig(landmarks, manualPitch = 0, manualYaw = 0, manualTongue = 0) {
-            const rawPos = nodes.geometry.attributes.position.array;
-            let cx = 0, cy = 0, cz = 0;
-
-            // Update Nodes
-            for (let i = 0; i < 478; i++) {
-                const targetX = (landmarks[i].x - 0.5) * -1000;
-                const targetY = (landmarks[i].y - 0.5) * -1000;
-                const targetZ = landmarks[i].z * 1000;
-
-                smoothedPos[i*3] += (targetX - smoothedPos[i*3]) * 0.5;
-                smoothedPos[i*3+1] += (targetY - smoothedPos[i*3+1]) * 0.5;
-                smoothedPos[i*3+2] += (targetZ - smoothedPos[i*3+2]) * 0.5;
-
-                rawPos[i*3] = smoothedPos[i*3];
-                rawPos[i*3+1] = smoothedPos[i*3+1];
-                rawPos[i*3+2] = smoothedPos[i*3+2];
-
-                if (i === 152) { cx = rawPos[i*3]; cy = rawPos[i*3+1]; cz = rawPos[i*3+2]; } // Chin
-            }
-            nodes.geometry.attributes.position.needsUpdate = true;
-
-            // Calculate Angles (AI or Manual)
-            let pitch = manualPitch; let yaw = manualYaw; let roll = 0;
-            
-            if (!simulationMode) {
-                const lEye = landmarks[133]; const rEye = landmarks[362]; const chin = landmarks[152];
-                pitch = Math.atan2(chin.z - lEye.z, chin.y - lEye.y);
-                yaw = Math.atan2(rEye.z - lEye.z, rEye.x - lEye.x);
-                roll = Math.atan2(rEye.y - lEye.y, rEye.x - lEye.x);
-            }
-
-            // Apply to Anatomy
-            neck.position.set(cx, cy - 50, cz - 30);
-            neck.rotation.set(pitch, yaw, roll);
-
-            torso.position.set(cx, cy - 200, cz - 50);
-            torso.rotation.set(0, yaw * 0.5, roll * 0.2);
-
-            hatAnchor.position.set(rawPos[10*3], rawPos[10*3+1] + 20, rawPos[10*3+2] - 20);
-            hatAnchor.rotation.set(pitch + 0.1, yaw, roll);
-
-            // Tongue Logic
-            let tongueScale = manualTongue;
-            if (!simulationMode) {
-                const mouthDist = Math.abs(landmarks[13].y - landmarks[14].y);
-                if (mouthDist > 0.05) tongueScale = Math.min((mouthDist - 0.05) * 15, 1.5);
-            }
-            
-            if (tongueScale > 0.01) {
-                tongue.scale.set(tongueScale, tongueScale, tongueScale);
-                tongue.position.set(rawPos[13*3], rawPos[13*3+1] - 10, rawPos[13*3+2] + (tongueScale * 15));
-                tongue.rotation.set(pitch + (Math.PI/2), yaw, roll);
-            } else {
-                tongue.scale.set(0.01, 0.01, 0.01);
-            }
+        function calculateEAR(landmarks) {
+            const top = landmarks[159]; const bot = landmarks[145];
+            const inr = landmarks[133]; const out = landmarks[33];
+            const h = Math.sqrt(Math.pow(top.x - bot.x, 2) + Math.pow(top.y - bot.y, 2));
+            const w = Math.sqrt(Math.pow(inr.x - out.x, 2) + Math.pow(inr.y - out.y, 2));
+            return h / w;
         }
 
-        // ==========================================
-        // 6. HARDWARE INITIALIZATION & ERROR CATCHING
-        // ==========================================
-        const videoElement = document.getElementById('video-feed');
-        
         const faceMesh = new FaceMesh({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
-        faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
+        faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.65, minTrackingConfidence: 0.65 });
 
         faceMesh.onResults((results) => {
-            if(simulationMode) return; // Ignore if in sim mode
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('video-feed').style.display = 'block';
-            document.getElementById('sys-status').innerText = "AI LOCKED";
-            document.getElementById('sys-status').style.color = "#69BE28";
-            document.getElementById('node-count').innerText = "478 / 478";
 
             if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-                updateRig(results.multiFaceLandmarks[0]);
+                document.getElementById('sys-state').innerText = "TRACKING LOCKED";
+                document.getElementById('sys-state').style.color = "#69BE28";
+                document.getElementById('nodes-tracked').innerText = "478 / 478";
+
+                const landmarks = results.multiFaceLandmarks[0];
+                const rawPos = faceNodes.geometry.attributes.position.array;
+                let cx = 0, cy = 0, cz = 0, chinX = 0, chinY = 0, chinZ = 0, mouthX = 0, mouthY = 0, mouthZ = 0;
+
+                // 1. Process Nodes with Linear Interpolation
+                for (let i = 0; i < landmarks.length; i++) {
+                    const tx = (landmarks[i].x - 0.5) * -1300; 
+                    const ty = (landmarks[i].y - 0.5) * -1300;
+                    const tz = landmarks[i].z * 1300;
+
+                    smoothedPos[i*3] += (tx - smoothedPos[i*3]) * 0.6;
+                    smoothedPos[i*3+1] += (ty - smoothedPos[i*3+1]) * 0.6;
+                    smoothedPos[i*3+2] += (tz - smoothedPos[i*3+2]) * 0.6;
+
+                    rawPos[i*3] = smoothedPos[i*3];
+                    rawPos[i*3+1] = smoothedPos[i*3+1];
+                    rawPos[i*3+2] = smoothedPos[i*3+2];
+
+                    if (i === 1) { cx = rawPos[i*3]; cy = rawPos[i*3+1]; cz = rawPos[i*3+2]; } 
+                    if (i === 152) { chinX = rawPos[i*3]; chinY = rawPos[i*3+1]; chinZ = rawPos[i*3+2]; } 
+                    if (i === 13) { mouthX = rawPos[i*3]; mouthY = rawPos[i*3+1]; mouthZ = rawPos[i*3+2]; } 
+                }
+                faceNodes.geometry.attributes.position.needsUpdate = true;
+
+                // 2. Telemetry (Atan2 Trig)
+                const pitch = Math.atan2(landmarks[152].z - landmarks[133].z, landmarks[152].y - landmarks[133].y);
+                const yaw = Math.atan2(landmarks[362].z - landmarks[133].z, landmarks[362].x - landmarks[133].x);
+                const roll = Math.atan2(landmarks[362].y - landmarks[133].y, landmarks[362].x - landmarks[133].x);
+
+                document.getElementById('val-pitch').innerText = (pitch * (180/Math.PI)).toFixed(1) + "°";
+                document.getElementById('val-yaw').innerText = (yaw * (180/Math.PI)).toFixed(1) + "°";
+                document.getElementById('val-roll').innerText = (roll * (180/Math.PI)).toFixed(1) + "°";
+
+                // 3. Blink Detection
+                const ear = calculateEAR(landmarks);
+                document.getElementById('val-eyes').innerText = ear < 0.22 ? "CLOSED" : "OPEN";
+                document.getElementById('val-eyes').style.color = ear < 0.22 ? "#ff0055" : "#69BE28";
+
+                // 4. Tongue Trigger Logic
+                const targetMouthDist = Math.abs(landmarks[13].y - landmarks[14].y);
+                smoothedMouth += (targetMouthDist - smoothedMouth) * 0.4;
+                document.getElementById('val-mouth').innerText = (smoothedMouth * 100).toFixed(2) + " mm";
+                
+                if (smoothedMouth > 0.055) {
+                    const ext = Math.min((smoothedMouth - 0.055) * 18, 1.8);
+                    tongue.scale.set(ext, ext, ext);
+                    tongue.position.set(mouthX, mouthY - 12, mouthZ + (ext * 18));
+                    tongue.rotation.set(pitch + (Math.PI/2), yaw, roll);
+                    document.getElementById('tongue-alert').style.display = 'block';
+                } else {
+                    tongue.scale.set(0.01, 0.01, 0.01);
+                    document.getElementById('tongue-alert').style.display = 'none';
+                }
+
+                // 5. Apply Rig Rotations
+                neck.position.set(chinX, chinY - 50, chinZ - 40);
+                neck.rotation.set(pitch, yaw, roll);
+
+                torso.position.set(chinX, chinY - 220, chinZ - 60);
+                torso.rotation.set(0, yaw * 0.4, roll * 0.2);
+
+                headwear.position.set(rawPos[10*3], rawPos[10*3+1] + 20, rawPos[10*3+2] - 20);
+                headwear.rotation.set(pitch + 0.1, yaw, roll);
+
+            } else {
+                document.getElementById('sys-state').innerText = "TARGET LOST";
+                document.getElementById('sys-state').style.color = "#ff0055";
             }
         });
 
-        // The Failsafe Camera Boot Sequence
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then((stream) => {
-                videoElement.srcObject = stream;
-                const cam = new Camera(videoElement, {
-                    onFrame: async () => { await faceMesh.send({image: videoElement}); },
-                    width: 640, height: 480
-                });
-                cam.start();
-            })
-            .catch((err) => {
-                console.error("CAMERA BLOCKED BY BROWSER:", err);
-                // Trigger Hardware Bypass
-                enableSimulationMode();
-            });
-
-        // ==========================================
-        // 7. UI EVENTS & RENDER LOOP
-        // ==========================================
-        document.getElementById('asset-select').addEventListener('change', (e) => {
-            hatAnchor.visible = (e.target.value === 'patka');
+        const videoElement = document.getElementById('video-feed');
+        const cam = new Camera(videoElement, {
+            onFrame: async () => { await faceMesh.send({image: videoElement}); },
+            width: 1280, height: 720
         });
+        cam.start();
 
-        const sPitch = document.getElementById('sim-pitch');
-        const sYaw = document.getElementById('sim-yaw');
-        const sTongue = document.getElementById('sim-tongue');
-
+        // ==========================================
+        // 5. RENDER LOOP (WITH BLOOM)
+        // ==========================================
         function animate() {
             requestAnimationFrame(animate);
-            
-            // Update custom shader time
             uniforms.time.value += 0.01;
-
-            if (simulationMode) {
-                // Feed the math sphere into the rig and animate it breathing
-                for(let i=0; i<478; i++) {
-                    simNodes[i].z += Math.sin(Date.now() * 0.002 + simNodes[i].y * 10) * 0.0005;
-                }
-                updateRig(simNodes, parseFloat(sPitch.value), parseFloat(sYaw.value), parseFloat(sTongue.value));
-            }
-
-            renderer.render(scene, camera);
+            grid.position.z = (Date.now() * 0.1) % 100;
+            
+            // Render via Post-Processing Composer instead of standard renderer
+            composer.render();
         }
         animate();
 
@@ -415,6 +343,7 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
