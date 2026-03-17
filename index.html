@@ -212,7 +212,7 @@
         }
 
         .progress-track { width: 100%; height: 6px; background: rgba(255,255,255,0.1); flex-shrink: 0; border-radius: 6px 6px 0 0; overflow: hidden;}
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #0ea5e9, #d946ef); width: 16.66%; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 10px rgba(255,255,255,0.5);}
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #0ea5e9, #d946ef); width: 25%; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 10px rgba(255,255,255,0.5);}
 
         .slide-viewport { flex: 1; min-height: 0; position: relative; overflow: hidden; }
         
@@ -463,76 +463,47 @@
         <div class="intro-panel liquid-glass">
             <div class="progress-track"><div class="progress-fill" id="p-bar"></div></div>
             <div class="slide-viewport">
+                
                 <div class="slide active" id="slide-1">
                     <div class="scroll-content">
-                        <span class="tag-pill">Module 01: The Core Crisis</span>
+                        <span class="tag-pill">The Core Crisis</span>
                         <h1>The Linear Economy</h1>
-                        <p>For centuries, global industry has operated on a highly destructive <strong>"Take-Make-Waste"</strong> model. We violently extract raw materials from the earth, burn massive amounts of fossil fuels to manufacture them into goods, and then rapidly discard them into colossal holes in the ground known as landfills.</p>
-                        <p>This linear system is a primary driver of the global climate crisis, habitat destruction, biodiversity loss, and ocean pollution. Continuing this path guarantees ecological collapse.</p>
+                        <p>Our <strong>"Take-Make-Waste"</strong> model is destroying the planet. 99% of what we harvest is trashed within 6 months. We must shift to a Circular Economy.</p>
                         <div class="info-grid">
-                            <div class="info-card red"><h3>99% Waste Ratio</h3><p>Astoundingly, 99% of the stuff we harvest, mine, process, and transport is trashed within just 6 months of sale.</p></div>
-                            <div class="info-card red"><h3>Finite Planet</h3><p>If everyone consumed resources like the average American, we would need 5 entire Earths to sustain the demand.</p></div>
+                            <div class="info-card red"><h3>99% Waste Ratio</h3><p>Astoundingly, 99% of stuff is trashed within just 6 months.</p></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="slide" id="slide-2">
                     <div class="scroll-content">
-                        <span class="tag-pill">Solution 01: Biological Cycling</span>
-                        <h1>Curing the Methane Crisis</h1>
-                        <p>When an organic item—like an apple core or soiled paper—goes to a landfill, it is deprived of oxygen. It undergoes anaerobic decomposition, releasing <strong>Methane (CH₄)</strong>, a super-pollutant roughly 80x more potent than CO₂.</p>
-                        <p>The <strong>Green Bin (Compost)</strong> solves this immediately. Organics break down aerobically, preventing methane and creating nutrient-rich soil that sequesters carbon.</p>
+                        <span class="tag-pill">Biological & Technical Loops</span>
+                        <h1>Compost & Recycling</h1>
+                        <p><strong>Compost (Green)</strong> stops methane by aerobically breaking down organics. <strong>Recycling (Blue)</strong> loops materials infinitely, saving up to 95% energy.</p>
                         <div class="info-grid">
-                            <div class="info-card green"><h3>Carbon Drawdown</h3><p>Applying compost to soil sequesters carbon in the ground, acting as a direct carbon sink.</p></div>
-                            <div class="info-card green"><h3>Rule of Thumb</h3><p>If it grows, it goes. Food scraps, uncoated paper, yard trimmings, pure untreated wood.</p></div>
+                            <div class="info-card green"><h3>Compost Rules</h3><p>If it grows, it goes. Food scraps, pure paper, wood.</p></div>
+                            <div class="info-card blue"><h3>Recycle Rules</h3><p>Clean aluminum, glass, cardboard. NO greasy food.</p></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="slide" id="slide-3">
                     <div class="scroll-content">
-                        <span class="tag-pill">Solution 02: Technical Looping</span>
-                        <h1>Infinite Material Loops</h1>
-                        <p>Throwing away recyclables destroys embedded energy and forces the extraction of virgin materials. The <strong>Blue Bin (Recycling)</strong> keeps technical materials in the economy.</p>
-                        <p>Materials like aluminum and glass can be recycled infinitely without losing structural quality, saving up to 95% of the energy required to make them from raw ore.</p>
+                        <span class="tag-pill">Toxins & Reduction</span>
+                        <h1>E-Waste & Landfill</h1>
+                        <p><strong>E-Waste (Yellow)</strong> must be mined for rare metals, not landfilled. <strong>Landfill (Black)</strong> is for mixed/toxic items we must ultimately learn to refuse.</p>
                         <div class="info-grid">
-                            <div class="info-card blue"><h3>The Purity Law</h3><p>Contamination ruins entire batches. Rinse your containers. Absolutely no food, no grease.</p></div>
-                            <div class="info-card blue"><h3>No Tanglers</h3><p>Flimsy plastic bags and wrap jam sorting machines. Keep them out of the blue bin.</p></div>
+                            <div class="info-card yellow"><h3>E-Waste Hazards</h3><p>Never put batteries in standard bins. Extreme fire hazard.</p></div>
+                            <div class="info-card purple"><h3>Wish-Cycling</h3><p>Guessing ruins recycling. Mixed layers = Trash.</p></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="slide" id="slide-4">
                     <div class="scroll-content">
-                        <span class="tag-pill">Solution 03: Toxic Mitigation</span>
-                        <h1>Urban Mining & Hazards</h1>
-                        <p>Electronic waste is the fastest-growing stream on Earth. When devices are trashed, heavy metals leach into groundwater, and lithium batteries cause massive facility fires.</p>
-                        <p>The <strong>Yellow Bin (E-Waste)</strong> represents special drop-off routing. We must "mine" our broken electronics for rare earth metals instead of strip-mining the earth.</p>
-                        <div class="info-grid">
-                            <div class="info-card yellow"><h3>Zero Tolerance</h3><p>Never put batteries, cords, or circuits in standard bins. They are extreme fire hazards.</p></div>
-                            <div class="info-card yellow"><h3>Value Recovery</h3><p>A ton of discarded phones contains 100x more gold than a ton of standard gold ore.</p></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="slide" id="slide-5">
-                    <div class="scroll-content">
-                        <span class="tag-pill">Solution 04: Source Reduction</span>
-                        <h1>Refuse & Dematerialize</h1>
-                        <p>Before we recycle or compost, we must reduce the flow of materials at the source. The truest form of the Circular Economy is refusing what we do not need and designing products to last.</p>
-                        <p>Multi-material packaging (like a foil-lined plastic chip bag) cannot be recycled because the fused layers cannot be separated. These must default to the <strong>Black Bin (Landfill)</strong>.</p>
-                        <div class="info-grid">
-                            <div class="info-card purple"><h3>Wish-Cycling</h3><p>Guessing ruins recycling. If it's a complex mix of plastic/metal/paper, it is trash.</p></div>
-                            <div class="info-card purple"><h3>The Ultimate Goal</h3><p>The landfill bin is a symbol of design failure. We aim to starve it completely.</p></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="slide" id="slide-6">
-                    <div class="scroll-content">
                         <span class="tag-pill">System Activation</span>
                         <h1>Simulator Protocols</h1>
-                        <p>You are about to enter the Advanced Circular Economy Simulator. Your mission is absolute diversion accuracy under extreme time pressure.</p>
+                        <p>Your mission is absolute diversion accuracy under extreme time pressure.</p>
                         
                         <div style="background: rgba(0,0,0,0.3); padding: clamp(15px, 3vw, 25px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.2); margin-top: 20px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
                             <h3 style="color:#fff; margin-bottom: 15px; font-size: clamp(1rem, 2vw, 1.4rem);">Engine Mechanics:</h3>
@@ -613,7 +584,7 @@
          * MASSIVE ITEM DATABASE (Expanded heavily to pad length and complexity)
          */
         const DATABASE = [
-            // COMPOST
+            // ORIGINAL COMPOST
             {e:"🍌",n:"Banana Peel",b:"compost",d:"Organic fruit waste breaks down quickly into nutrient-rich soil. Prevents methane creation."}, 
             {e:"🍎",n:"Apple Core",b:"compost",d:"High nitrogen content, perfect for green bins."}, 
             {e:"☕",n:"Coffee Grounds",b:"compost",d:"An excellent nitrogen source for healthy compost."}, 
@@ -689,8 +660,84 @@
             {e:"🌮",n:"Taco Shell",b:"compost",d:"Corn product."}, 
             {e:"🥞",n:"Pancake Scraps",b:"compost",d:"Food."}, 
             {e:"🥣",n:"Oatmeal Leftovers",b:"compost",d:"Grains."},
+            // EXPANDED COMPOST
+            {e:"🥭",n:"Mango Peel",b:"compost",d:"Organic fruit waste."},
+            {e:"🍈",n:"Honeydew Rind",b:"compost",d:"Organic fruit waste."},
+            {e:"🍈",n:"Cantaloupe Rind",b:"compost",d:"Organic fruit waste."},
+            {e:"🍒",n:"Cherry Pits",b:"compost",d:"Organic fruit waste."},
+            {e:"🍑",n:"Plum Pit",b:"compost",d:"Organic fruit waste."},
+            {e:"🍑",n:"Nectarine Pit",b:"compost",d:"Organic fruit waste."},
+            {e:"🍐",n:"Pear Core",b:"compost",d:"Organic fruit waste."},
+            {e:"🍏",n:"Green Apple Core",b:"compost",d:"Organic fruit waste."},
+            {e:"🍋",n:"Lime Peel",b:"compost",d:"Organic fruit waste."},
+            {e:"🍊",n:"Orange Peel",b:"compost",d:"Organic fruit waste."},
+            {e:"🍊",n:"Grapefruit Peel",b:"compost",d:"Organic fruit waste."},
+            {e:"🍊",n:"Tangerine Peel",b:"compost",d:"Organic fruit waste."},
+            {e:"🥥",n:"Coconut Husk",b:"compost",d:"Organic waste."},
+            {e:"🍅",n:"Cherry Tomatoes",b:"compost",d:"Organic waste."},
+            {e:"🫑",n:"Bell Pepper Core",b:"compost",d:"Organic vegetable waste."},
+            {e:"🌶️",n:"Jalapeno Stems",b:"compost",d:"Organic vegetable waste."},
+            {e:"🍠",n:"Sweet Potato Peels",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥔",n:"Yam Peels",b:"compost",d:"Organic vegetable waste."},
+            {e:"🍆",n:"Eggplant Top",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥦",n:"Cauliflower Leaves",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥬",n:"Romaine Lettuce",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥬",n:"Iceberg Lettuce",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥬",n:"Spinach Stems",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥬",n:"Kale Stems",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥬",n:"Arugula",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥬",n:"Swiss Chard Stems",b:"compost",d:"Organic vegetable waste."},
+            {e:"🧅",n:"Red Onion Skins",b:"compost",d:"Organic vegetable waste."},
+            {e:"🧅",n:"Shallot Skins",b:"compost",d:"Organic vegetable waste."},
+            {e:"🧅",n:"Leek Ends",b:"compost",d:"Organic vegetable waste."},
+            {e:"🧅",n:"Scallion Roots",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥕",n:"Parsnip Peels",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥕",n:"Turnip Greens",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥕",n:"Radish Tops",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥕",n:"Beet Greens",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥒",n:"Zucchini Ends",b:"compost",d:"Organic vegetable waste."},
+            {e:"🥒",n:"Squash Seeds",b:"compost",d:"Organic vegetable waste."},
+            {e:"🌽",n:"Corn Husks",b:"compost",d:"Organic vegetable waste."},
+            {e:"🌽",n:"Corn Silk",b:"compost",d:"Organic vegetable waste."},
+            {e:"🫛",n:"Pea Pods",b:"compost",d:"Organic vegetable waste."},
+            {e:"🫛",n:"Green Bean Ends",b:"compost",d:"Organic vegetable waste."},
+            {e:"🫛",n:"Edamame Shells",b:"compost",d:"Organic vegetable waste."},
+            {e:"🫘",n:"Lentils",b:"compost",d:"Organic waste."},
+            {e:"🫘",n:"Chickpeas",b:"compost",d:"Organic waste."},
+            {e:"🫘",n:"Black Beans",b:"compost",d:"Organic waste."},
+            {e:"🫘",n:"Kidney Beans",b:"compost",d:"Organic waste."},
+            {e:"🌾",n:"Quinoa",b:"compost",d:"Organic waste."},
+            {e:"🌾",n:"Barley",b:"compost",d:"Organic waste."},
+            {e:"🌾",n:"Oats",b:"compost",d:"Organic waste."},
+            {e:"🌾",n:"Wheat Bran",b:"compost",d:"Organic waste."},
+            {e:"🍞",n:"Stale Baguette",b:"compost",d:"Organic waste."},
+            {e:"🍞",n:"Sourdough Crust",b:"compost",d:"Organic waste."},
+            {e:"🍞",n:"Rye Bread",b:"compost",d:"Organic waste."},
+            {e:"🍞",n:"Pita Bread",b:"compost",d:"Organic waste."},
+            {e:"🥐",n:"Stale Croissant",b:"compost",d:"Organic waste."},
+            {e:"🥯",n:"Stale Bagel",b:"compost",d:"Organic waste."},
+            {e:"🥖",n:"Breadcrumbs",b:"compost",d:"Organic waste."},
+            {e:"🧁",n:"Muffin Wrapper",b:"compost",d:"Paper wrapper breaks down easily."},
+            {e:"🍰",n:"Cake Scraps",b:"compost",d:"Organic waste."},
+            {e:"🥧",n:"Pie Crust",b:"compost",d:"Organic waste."},
+            {e:"🍪",n:"Cookie Crumbs",b:"compost",d:"Organic waste."},
+            {e:"🍩",n:"Stale Donut",b:"compost",d:"Organic waste."},
+            {e:"🍿",n:"Unpopped Kernels",b:"compost",d:"Organic waste."},
+            {e:"🍿",n:"Stale Popcorn",b:"compost",d:"Organic waste."},
+            {e:"🍫",n:"Cocoa Nibs",b:"compost",d:"Organic waste."},
+            {e:"🍬",n:"Cotton Candy",b:"compost",d:"Pure sugar melts away."},
+            {e:"🍯",n:"Crystallized Honey",b:"compost",d:"Organic waste."},
+            {e:"🥛",n:"Spoiled Milk",b:"compost",d:"Commercial composters handle dairy."},
+            {e:"🧈",n:"Spoiled Butter",b:"compost",d:"Commercial composters handle fats."},
+            {e:"🍦",n:"Melted Ice Cream",b:"compost",d:"Organic waste."},
+            {e:"🥚",n:"Hardboiled Egg",b:"compost",d:"Organic waste."},
+            {e:"🍳",n:"Scrambled Eggs",b:"compost",d:"Organic waste."},
+            {e:"🥩",n:"Spoiled Beef",b:"compost",d:"Commercial composters handle meat."},
+            {e:"🥩",n:"Spoiled Pork",b:"compost",d:"Commercial composters handle meat."},
+            {e:"🍗",n:"Turkey Bones",b:"compost",d:"Commercial composters handle bone."},
+            {e:"🥓",n:"Bacon Grease",b:"compost",d:"Commercial composters handle grease."},
 
-            // RECYCLE
+            // ORIGINAL RECYCLE
             {e:"📦",n:"Cardboard Box",b:"recycle",d:"Cardboard is highly recyclable and saves trees. Flatten it first!"}, 
             {e:"📰",n:"Newspaper",b:"recycle",d:"Can be recycled into new paper products or home insulation."}, 
             {e:"📄",n:"Printer Paper",b:"recycle",d:"High-grade white paper is very valuable for paper recyclers."}, 
@@ -775,10 +822,85 @@
             {e:"🧴",n:"Saline Bottle",b:"recycle",d:"Rigid plastic."}, 
             {e:"🫙",n:"Salsa Jar",b:"recycle",d:"Glass."}, 
             {e:"🥫",n:"Baked Beans Can",b:"recycle",d:"Metal."}, 
-            {e:"📦",n:"Tissue Box",b:"recycle",d:"Paperboard (tear out the plastic slit first)."}
+            {e:"📦",n:"Tissue Box",b:"recycle",d:"Paperboard (tear out the plastic slit first)."},
+            // EXPANDED RECYCLE
+            {e:"📦",n:"Amazon Box",b:"recycle",d:"Cardboard is highly recyclable. Remove tape if possible."},
+            {e:"📦",n:"Appliance Box",b:"recycle",d:"Cardboard."},
+            {e:"📦",n:"Gift Box",b:"recycle",d:"Paperboard."},
+            {e:"📦",n:"Jewelry Box",b:"recycle",d:"Paperboard."},
+            {e:"📰",n:"Local Newspaper",b:"recycle",d:"Paper."},
+            {e:"📰",n:"Sunday Paper",b:"recycle",d:"Paper."},
+            {e:"📄",n:"Graph Paper",b:"recycle",d:"Paper."},
+            {e:"📄",n:"Lined Paper",b:"recycle",d:"Paper."},
+            {e:"📄",n:"Origami Paper",b:"recycle",d:"Paper."},
+            {e:"📄",n:"Tracing Paper",b:"recycle",d:"Paper."},
+            {e:"✉️",n:"Postcard",b:"recycle",d:"Paper."},
+            {e:"✉️",n:"Wedding Invite",b:"recycle",d:"Paper (if no foil)."},
+            {e:"📖",n:"Comic Book",b:"recycle",d:"Paper."},
+            {e:"📖",n:"Graphic Novel",b:"recycle",d:"Paper."},
+            {e:"🥣",n:"Oatmeal Box",b:"recycle",d:"Paperboard."},
+            {e:"🥣",n:"Cracker Box",b:"recycle",d:"Paperboard."},
+            {e:"🥫",n:"Sparkling Water Can",b:"recycle",d:"Aluminum."},
+            {e:"🥫",n:"Beer Can",b:"recycle",d:"Aluminum."},
+            {e:"🥫",n:"Cider Can",b:"recycle",d:"Aluminum."},
+            {e:"🥫",n:"Tomato Paste Can",b:"recycle",d:"Metal."},
+            {e:"🥫",n:"Corn Can",b:"recycle",d:"Metal."},
+            {e:"🥫",n:"Pea Can",b:"recycle",d:"Metal."},
+            {e:"🥫",n:"Fruit Cocktail Can",b:"recycle",d:"Metal."},
+            {e:"🥡",n:"Aluminum Pie Pan",b:"recycle",d:"Aluminum."},
+            {e:"🥡",n:"Roasting Pan",b:"recycle",d:"Aluminum."},
+            {e:"🍾",n:"Sparkling Cider Bottle",b:"recycle",d:"Glass."},
+            {e:"🍾",n:"Kombucha Bottle",b:"recycle",d:"Glass."},
+            {e:"🫙",n:"Mayonnaise Jar",b:"recycle",d:"Glass."},
+            {e:"🫙",n:"Peanut Butter Jar",b:"recycle",d:"Plastic or glass."},
+            {e:"🫙",n:"Jelly Jar",b:"recycle",d:"Glass."},
+            {e:"🧴",n:"Sports Drink Bottle",b:"recycle",d:"Plastic."},
+            {e:"🧴",n:"Juice Bottle",b:"recycle",d:"Plastic."},
+            {e:"🧴",n:"Tea Bottle",b:"recycle",d:"Plastic."},
+            {e:"🥛",n:"Oat Milk Jug",b:"recycle",d:"Plastic."},
+            {e:"🥛",n:"Almond Milk Jug",b:"recycle",d:"Plastic."},
+            {e:"🧼",n:"Fabric Softener Bottle",b:"recycle",d:"Plastic."},
+            {e:"🧼",n:"Stain Remover Bottle",b:"recycle",d:"Plastic."},
+            {e:"🧴",n:"Conditioner Bottle",b:"recycle",d:"Plastic."},
+            {e:"🧴",n:"Face Wash Bottle",b:"recycle",d:"Plastic."},
+            {e:"🍦",n:"Sour Cream Tub",b:"recycle",d:"Plastic."},
+            {e:"🍦",n:"Cottage Cheese Tub",b:"recycle",d:"Plastic."},
+            {e:"🧈",n:"Cream Cheese Tub",b:"recycle",d:"Plastic."},
+            {e:"🧈",n:"Whip Topping Tub",b:"recycle",d:"Plastic."},
+            {e:"🍕",n:"Cardboard Pizza Circle",b:"recycle",d:"Clean cardboard."},
+            {e:"🥚",n:"Plastic Egg Carton",b:"recycle",d:"Plastic."},
+            {e:"💨",n:"Hairspray Can",b:"recycle",d:"Metal."},
+            {e:"💨",n:"Shaving Cream Can",b:"recycle",d:"Metal."},
+            {e:"💨",n:"Air Freshener Can",b:"recycle",d:"Metal."},
+            {e:"💨",n:"Cooking Spray Can",b:"recycle",d:"Metal."},
+            {e:"🎁",n:"Gift Bag",b:"recycle",d:"Paper (remove handles)."},
+            {e:"🛍️",n:"Boutique Paper Bag",b:"recycle",d:"Paper."},
+            {e:"🗂️",n:"Hanging File",b:"recycle",d:"Paper (remove metal hooks)."},
+            {e:"🗂️",n:"Index Tab",b:"recycle",d:"Paper."},
+            {e:"📝",n:"Legal Pad",b:"recycle",d:"Paper."},
+            {e:"📝",n:"Steno Pad",b:"recycle",d:"Paper."},
+            {e:"🗺️",n:"Tourist Map",b:"recycle",d:"Paper."},
+            {e:"🗺️",n:"Trail Map",b:"recycle",d:"Paper."},
+            {e:"📚",n:"Manual",b:"recycle",d:"Paper."},
+            {e:"📚",n:"Workbook",b:"recycle",d:"Paper."},
+            {e:"🥤",n:"Stadium Cup",b:"recycle",d:"Plastic."},
+            {e:"🥤",n:"Souvenir Cup",b:"recycle",d:"Plastic."},
+            {e:"🍱",n:"Sushi Tray",b:"recycle",d:"Plastic."},
+            {e:"🍱",n:"Salad Bowl",b:"recycle",d:"Plastic."},
+            {e:"🍓",n:"Tomato Clamshell",b:"recycle",d:"Plastic."},
+            {e:"🍓",n:"Grape Clamshell",b:"recycle",d:"Plastic."},
+            {e:"🍓",n:"Mushroom Till",b:"recycle",d:"Plastic or paperboard."},
+            {e:"🧃",n:"Broth Carton",b:"recycle",d:"Aseptic carton."},
+            {e:"🧃",n:"Cream Carton",b:"recycle",d:"Carton."},
+            {e:"🥛",n:"Soy Milk Carton",b:"recycle",d:"Carton."},
+            {e:"🍺",n:"Root Beer Bottle",b:"recycle",d:"Glass."},
+            {e:"🍺",n:"Ginger Ale Bottle",b:"recycle",d:"Glass."},
+            {e:"🛢️",n:"Coconut Oil Tin",b:"recycle",d:"Metal."},
+            {e:"🛢️",n:"Tea Tin",b:"recycle",d:"Metal."},
+            {e:"🛢️",n:"Cookie Tin",b:"recycle",d:"Metal."},
 
-            // LANDFILL
-            ,{e:"🍟",n:"Potato Chip Bag",b:"landfill",d:"Made of mixed materials (plastic lined with metallic film) which cannot be separated."}, 
+            // ORIGINAL LANDFILL
+            {e:"🍟",n:"Potato Chip Bag",b:"landfill",d:"Made of mixed materials (plastic lined with metallic film) which cannot be separated."}, 
             {e:"🍬",n:"Candy Wrapper",b:"landfill",d:"Flimsy, mixed-material plastics are not recyclable curbside. They blow away and contaminate streams."}, 
             {e:"☕",n:"Styrofoam Cup",b:"landfill",d:"Expanded polystyrene (EPS) is 95% air and rarely accepted in curbside recycling."}, 
             {e:"🌯",n:"Plastic Wrap",b:"landfill",d:"Film plastics tangle up the spinning gears at recycling plants. Massive machine jams."}, 
@@ -850,8 +972,82 @@
             {e:"🩹",n:"Medical Tape",b:"landfill",d:"Adhesive and fabric."}, 
             {e:"🧪",n:"Marker Pen",b:"landfill",d:"Mixed plastic and ink core."}, 
             {e:"📎",n:"Binder Clip",b:"landfill",d:"Metal (too small to sort)."},
+            // EXPANDED LANDFILL
+            {e:"🍟",n:"Tortilla Chip Bag",b:"landfill",d:"Mixed materials."},
+            {e:"🍟",n:"Pretzel Bag",b:"landfill",d:"Mixed materials."},
+            {e:"🍟",n:"Popcorn Bag",b:"landfill",d:"Mixed materials."},
+            {e:"🍬",n:"Chocolate Wrapper",b:"landfill",d:"Mixed materials."},
+            {e:"🍬",n:"Lollipop Wrapper",b:"landfill",d:"Mixed materials."},
+            {e:"🍬",n:"Gum Wrapper",b:"landfill",d:"Mixed materials."},
+            {e:"☕",n:"Styrofoam Plate",b:"landfill",d:"EPS foam."},
+            {e:"☕",n:"Styrofoam Bowl",b:"landfill",d:"EPS foam."},
+            {e:"🌯",n:"Saran Wrap",b:"landfill",d:"Film plastic."},
+            {e:"🛍️",n:"Produce Bag",b:"landfill",d:"Film plastic."},
+            {e:"🛍️",n:"Bread Bag",b:"landfill",d:"Film plastic."},
+            {e:"🛍️",n:"Newspaper Sleeve",b:"landfill",d:"Film plastic."},
+            {e:"🍷",n:"Broken Wine Glass",b:"landfill",d:"Treated glass."},
+            {e:"🍷",n:"Broken Pyrex",b:"landfill",d:"Treated glass."},
+            {e:"☕",n:"Broken Teacup",b:"landfill",d:"Ceramic."},
+            {e:"☕",n:"Broken Plate",b:"landfill",d:"Ceramic."},
+            {e:"👶",n:"Swim Diaper",b:"landfill",d:"Mixed materials and biohazard."},
+            {e:"🐶",n:"Puppy Pad",b:"landfill",d:"Mixed materials and biohazard."},
+            {e:"🐈",n:"Pet Hair Brush",b:"landfill",d:"Mixed materials."},
+            {e:"🪥",n:"Ointment Tube",b:"landfill",d:"Mixed materials."},
+            {e:"🪥",n:"Lotion Tube",b:"landfill",d:"Mixed materials."},
+            {e:"🤧",n:"Paper Towel",b:"landfill",d:"Short fibers, often soiled."},
+            {e:"🤧",n:"Toilet Paper",b:"landfill",d:"Biohazard."},
+            {e:"👂",n:"Makeup Pad",b:"landfill",d:"Mixed fibers and cosmetics."},
+            {e:"🩹",n:"Gauze Pad",b:"landfill",d:"Biohazard."},
+            {e:"🩹",n:"Ace Bandage",b:"landfill",d:"Mixed materials."},
+            {e:"🦷",n:"Mouthguard",b:"landfill",d:"Mixed plastic/silicone."},
+            {e:"🧽",n:"Steel Wool",b:"landfill",d:"Mixed materials."},
+            {e:"🧽",n:"Scrub Brush",b:"landfill",d:"Mixed plastics."},
+            {e:"🪵",n:"Painted Wood",b:"landfill",d:"Treated wood."},
+            {e:"🪵",n:"Stained Wood",b:"landfill",d:"Treated wood."},
+            {e:"🧸",n:"Action Figure",b:"landfill",d:"Mixed plastics."},
+            {e:"🧸",n:"Doll",b:"landfill",d:"Mixed plastics and fabric."},
+            {e:"☕",n:"Hot Cocoa Cup",b:"landfill",d:"Plastic lined paper."},
+            {e:"🍴",n:"Plastic Knife",b:"landfill",d:"Small plastic."},
+            {e:"🍴",n:"Plastic Spoon",b:"landfill",d:"Small plastic."},
+            {e:"🥤",n:"Coffee Stirrer",b:"landfill",d:"Small plastic."},
+            {e:"🥤",n:"Cocktail Stirrer",b:"landfill",d:"Small plastic."},
+            {e:"🧃",n:"Capri Sun",b:"landfill",d:"Foil/plastic layer."},
+            {e:"🥫",n:"Mustard Packet",b:"landfill",d:"Mixed materials."},
+            {e:"🥫",n:"Relish Packet",b:"landfill",d:"Mixed materials."},
+            {e:"🥫",n:"Soy Sauce Packet",b:"landfill",d:"Mixed materials."},
+            {e:"💊",n:"Cough Drop Wrapper",b:"landfill",d:"Mixed materials."},
+            {e:"🖼️",n:"Polaroid",b:"landfill",d:"Chemical coating."},
+            {e:"🖼️",n:"Negative Film",b:"landfill",d:"Chemical coating."},
+            {e:"📄",n:"Sticker Backing",b:"landfill",d:"Silicone coated."},
+            {e:"📄",n:"Wax Paper",b:"landfill",d:"Wax coated."},
+            {e:"🧾",n:"ATM Receipt",b:"landfill",d:"Thermal paper."},
+            {e:"🧾",n:"Gas Receipt",b:"landfill",d:"Thermal paper."},
+            {e:"🍏",n:"Yogurt Pouch",b:"landfill",d:"Mixed materials."},
+            {e:"🥜",n:"Packing Peanuts",b:"landfill",d:"EPS foam."},
+            {e:"🫧",n:"Air Pillows",b:"landfill",d:"Film plastic."},
+            {e:"🧻",n:"Makeup Wipe",b:"landfill",d:"Synthetic fibers."},
+            {e:"🧻",n:"Baby Wipe",b:"landfill",d:"Synthetic fibers."},
+            {e:"🧺",n:"Lint Roller Sheet",b:"landfill",d:"Adhesive and paper."},
+            {e:"🖊️",n:"Highlighter",b:"landfill",d:"Mixed plastics/ink."},
+            {e:"🖊️",n:"Sharpie",b:"landfill",d:"Mixed plastics/ink."},
+            {e:"🖊️",n:"Dry Erase Marker",b:"landfill",d:"Mixed plastics/ink."},
+            {e:"🏈",n:"Basketball",b:"landfill",d:"Rubber/leather."},
+            {e:"🏈",n:"Tennis Ball",b:"landfill",d:"Rubber/felt."},
+            {e:"🏈",n:"Golf Ball",b:"landfill",d:"Hard plastic/rubber."},
+            {e:"💿",n:"DVD",b:"landfill",d:"Polycarbonate plastic."},
+            {e:"💿",n:"Blu-Ray",b:"landfill",d:"Polycarbonate plastic."},
+            {e:"📼",n:"Cassette Tape",b:"landfill",d:"Mylar tape."},
+            {e:"📼",n:"Floppy Disk",b:"landfill",d:"Mixed materials."},
+            {e:"🎈",n:"Water Balloon",b:"landfill",d:"Latex."},
+            {e:"🎀",n:"Curling Ribbon",b:"landfill",d:"Plastic."},
+            {e:"🎀",n:"Tinsel",b:"landfill",d:"Plastic/foil."},
+            {e:"🧷",n:"Bobby Pin",b:"landfill",d:"Too small."},
+            {e:"🧷",n:"Hair Tie",b:"landfill",d:"Elastic/fabric."},
+            {e:"🧷",n:"Barrette",b:"landfill",d:"Mixed materials."},
+            {e:"🪒",n:"Razor Blade",b:"landfill",d:"Sharp metal hazard."},
+            {e:"🧯",n:"Matchbook",b:"landfill",d:"Mixed materials."},
 
-            // E-WASTE / HAZMAT
+            // ORIGINAL E-WASTE
             {e:"🔋",n:"Alkaline Battery",b:"ewaste",d:"Needs e-waste drop-off to prevent fires. NEVER goes in standard recycling."}, 
             {e:"📱",n:"Broken Smartphone",b:"ewaste",d:"Contains lithium-ion battery, gold, copper, and glass. High fire risk if crushed in a garbage truck."}, 
             {e:"💻",n:"Broken Laptop",b:"ewaste",d:"Massive source of e-waste. Must be professionally dismantled to recover heavy metals."}, 
@@ -880,7 +1076,84 @@
             {e:"📹",n:"Broken Camcorder",b:"ewaste",d:"Circuit boards and lenses."}, 
             {e:"🕹️",n:"Broken Joystick",b:"ewaste",d:"Electronic sensors and wiring."}, 
             {e:"🎛️",n:"Audio Mixer",b:"ewaste",d:"Heavy electronic equipment."}, 
-            {e:"📡",n:"Old Router",b:"ewaste",d:"Circuitry and antennas."}
+            {e:"📡",n:"Old Router",b:"ewaste",d:"Circuitry and antennas."},
+            // EXPANDED E-WASTE
+            {e:"🔋",n:"AA Battery",b:"ewaste",d:"Battery."},
+            {e:"🔋",n:"AAA Battery",b:"ewaste",d:"Battery."},
+            {e:"🔋",n:"D Battery",b:"ewaste",d:"Battery."},
+            {e:"🔋",n:"C Battery",b:"ewaste",d:"Battery."},
+            {e:"🔋",n:"9V Battery",b:"ewaste",d:"Battery."},
+            {e:"🔋",n:"Coin Cell Battery",b:"ewaste",d:"Battery."},
+            {e:"🔋",n:"Car Battery",b:"ewaste",d:"Hazardous waste."},
+            {e:"📱",n:"Old Cell Phone",b:"ewaste",d:"Electronic."},
+            {e:"📱",n:"Broken Tablet",b:"ewaste",d:"Electronic."},
+            {e:"📱",n:"E-Reader",b:"ewaste",d:"Electronic."},
+            {e:"📱",n:"PDA",b:"ewaste",d:"Electronic."},
+            {e:"💻",n:"Desktop Tower",b:"ewaste",d:"Electronic."},
+            {e:"💻",n:"Server Blade",b:"ewaste",d:"Electronic."},
+            {e:"💻",n:"Motherboard",b:"ewaste",d:"Electronic component."},
+            {e:"💻",n:"Graphics Card",b:"ewaste",d:"Electronic component."},
+            {e:"💻",n:"RAM Stick",b:"ewaste",d:"Electronic component."},
+            {e:"💻",n:"Hard Drive",b:"ewaste",d:"Electronic component."},
+            {e:"💻",n:"Solid State Drive",b:"ewaste",d:"Electronic component."},
+            {e:"💻",n:"Power Supply Unit",b:"ewaste",d:"Electronic component."},
+            {e:"🖱️",n:"Trackball",b:"ewaste",d:"Electronic."},
+            {e:"🖱️",n:"Drawing Tablet",b:"ewaste",d:"Electronic."},
+            {e:"⌨️",n:"Mechanical Keyboard",b:"ewaste",d:"Electronic."},
+            {e:"⌨️",n:"Membrane Keyboard",b:"ewaste",d:"Electronic."},
+            {e:"🎧",n:"Over-Ear Headphones",b:"ewaste",d:"Electronic."},
+            {e:"🎧",n:"Bluetooth Headset",b:"ewaste",d:"Electronic."},
+            {e:"🎧",n:"Gaming Headset",b:"ewaste",d:"Electronic."},
+            {e:"🎮",n:"VR Headset",b:"ewaste",d:"Electronic."},
+            {e:"🎮",n:"Handheld Console",b:"ewaste",d:"Electronic."},
+            {e:"🎮",n:"Arcade Stick",b:"ewaste",d:"Electronic."},
+            {e:"🎮",n:"Steering Wheel Controller",b:"ewaste",d:"Electronic."},
+            {e:"🔌",n:"HDMI Cable",b:"ewaste",d:"Electronic."},
+            {e:"🔌",n:"USB Cable",b:"ewaste",d:"Electronic."},
+            {e:"🔌",n:"Ethernet Cable",b:"ewaste",d:"Electronic."},
+            {e:"🔌",n:"VGA Cable",b:"ewaste",d:"Electronic."},
+            {e:"🔌",n:"DisplayPort Cable",b:"ewaste",d:"Electronic."},
+            {e:"🔌",n:"Extension Cord",b:"ewaste",d:"Electronic."},
+            {e:"🔌",n:"Surge Protector",b:"ewaste",d:"Electronic."},
+            {e:"💡",n:"CFL Lightbulb",b:"ewaste",d:"Hazardous waste."},
+            {e:"💡",n:"Fluorescent Tube",b:"ewaste",d:"Hazardous waste."},
+            {e:"💡",n:"Halogen Bulb",b:"ewaste",d:"Hazardous waste."},
+            {e:"💡",n:"Smart Bulb",b:"ewaste",d:"Electronic."},
+            {e:"🔋",n:"Laptop Battery",b:"ewaste",d:"Hazardous waste."},
+            {e:"🔋",n:"Phone Battery",b:"ewaste",d:"Hazardous waste."},
+            {e:"📷",n:"DSLR Camera",b:"ewaste",d:"Electronic."},
+            {e:"📷",n:"Point and Shoot Camera",b:"ewaste",d:"Electronic."},
+            {e:"📷",n:"Action Camera",b:"ewaste",d:"Electronic."},
+            {e:"📷",n:"Camera Lens",b:"ewaste",d:"Electronic."},
+            {e:"📺",n:"CRT TV",b:"ewaste",d:"Hazardous waste."},
+            {e:"📺",n:"LCD TV",b:"ewaste",d:"Electronic."},
+            {e:"📺",n:"OLED TV",b:"ewaste",d:"Electronic."},
+            {e:"📺",n:"Projector",b:"ewaste",d:"Electronic."},
+            {e:"📟",n:"Graphing Calculator",b:"ewaste",d:"Electronic."},
+            {e:"📟",n:"Adding Machine",b:"ewaste",d:"Electronic."},
+            {e:"📟",n:"Barcode Scanner",b:"ewaste",d:"Electronic."},
+            {e:"📟",n:"POS Terminal",b:"ewaste",d:"Electronic."},
+            {e:"📠",n:"Fax Machine",b:"ewaste",d:"Electronic."},
+            {e:"📠",n:"Copier",b:"ewaste",d:"Electronic."},
+            {e:"📠",n:"Toner Cartridge",b:"ewaste",d:"Hazardous waste."},
+            {e:"🔌",n:"SD Card",b:"ewaste",d:"Electronic."},
+            {e:"🔌",n:"MicroSD Card",b:"ewaste",d:"Electronic."},
+            {e:"🔌",n:"External Hard Drive",b:"ewaste",d:"Electronic."},
+            {e:"🎤",n:"Condenser Mic",b:"ewaste",d:"Electronic."},
+            {e:"🎤",n:"Dynamic Mic",b:"ewaste",d:"Electronic."},
+            {e:"🎤",n:"Lavalier Mic",b:"ewaste",d:"Electronic."},
+            {e:"🥧",n:"Arduino Board",b:"ewaste",d:"Electronic."},
+            {e:"🥧",n:"Breadboard",b:"ewaste",d:"Electronic."},
+            {e:"🎹",n:"Synthesizer",b:"ewaste",d:"Electronic."},
+            {e:"🎹",n:"Drum Machine",b:"ewaste",d:"Electronic."},
+            {e:"🎹",n:"Guitar Pedal",b:"ewaste",d:"Electronic."},
+            {e:"⌚",n:"Fitness Tracker",b:"ewaste",d:"Electronic."},
+            {e:"⌚",n:"Digital Watch",b:"ewaste",d:"Electronic."},
+            {e:"📻",n:"Boombox",b:"ewaste",d:"Electronic."},
+            {e:"📻",n:"Walkman",b:"ewaste",d:"Electronic."},
+            {e:"📻",n:"MP3 Player",b:"ewaste",d:"Electronic."},
+            {e:"📻",n:"CD Player",b:"ewaste",d:"Electronic."},
+            {e:"📻",n:"Record Player",b:"ewaste",d:"Electronic."}
         ];
 
         /**
@@ -1045,7 +1318,7 @@
          * INTRO SEQUENCE ENGINE
          */
         const Engine = {
-            curr: 1, total: 6,
+            curr: 1, total: 4,
             init() { this.updateUI(); },
             updateUI() {
                 document.querySelectorAll('.slide').forEach((el, idx) => {
